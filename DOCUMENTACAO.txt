@@ -1,0 +1,538 @@
+Documentação — Glossário Gamer & Retromodding
+=============================================
+
+Versão em texto puro de DOCUMENTACAO.md
+
+Versão: edição 01
+Autor: kaio
+Aplicação: index.html
+Última atualização: outubro de 2026
+Idioma da interface: pt-BR
+
+==============================================================================
+
+1. Visão geral
+--------------
+
+O Glossário Gamer & Retromodding é uma aplicação web de página única (SPA) para consulta de termos do universo dos jogos e da preservação/modificação de hardware antigo.
+
+A aplicação foi construída em um único arquivo index.html, com HTML, CSS e JavaScript embutidos, sem framework, sem etapa de build e sem banco de dados. O conteúdo é estático e fica armazenado em um array JavaScript dentro do próprio arquivo.
+
+O projeto tem quatro objetivos principais:
+
+1. Servir como material de consulta rápida durante uma apresentação acadêmica/tecnológica.
+2. Reunir vocabulário de hardware, emulação, jogabilidade e cultura gamer.
+3. Demonstrar uma interface responsiva, acessível e com identidade visual própria.
+4. Funcionar localmente, sem servidor de aplicação ou instalação de dependências.
+
+==============================================================================
+
+2. Resultado em números
+-----------------------
+
+Item                                  | Quantidade
+--------------------------------------+--------------------
+Termos no glossário                   | 74
+Termos adicionados na última expansão | 59
+Categorias                            | 4
+Símbolos SVG no sprite                | 64
+Cards renderizados inicialmente       | 74
+Arquivos de runtime                   | 1 (index.html)
+Frameworks de front-end               | 0
+Dependências de build                 | 0
+Chaves de persistência local          | 1 (gg-favoritos-v1)
+
+Distribuição por categoria:
+
+Categoria         | Código | Cor de destaque | Termos
+------------------+--------+-----------------+-------
+Hardware/Mod      | HW     | #0032a8         | 17
+Emulação          | EM     | #01722f         | 17
+Jogabilidade      | JB     | #c21b5a         | 21
+Cultura & Mercado | CT     | #c41204         | 19
+Total             | —      | —               | 74
+
+==============================================================================
+
+3. Tecnologias e APIs utilizadas
+--------------------------------
+
+3.1 Tecnologias principais
+
+Camada                | Tecnologia                         | Uso no projeto
+----------------------+------------------------------------+------------------------------------------------------------------------------------------------------------
+Estrutura             | HTML5 semântico                    | header, main, section, footer, dialog, formulário de busca e botões nativos.
+Estilo                | CSS3                               | Variáveis CSS, Grid, Flexbox, clamp(), color-mix(), gradientes, backdrop-filter, animações e media queries.
+Comportamento         | JavaScript ES6+ (vanilla)          | Dados, busca, filtros, ordenação, renderização, favoritos, modal, URL e cópia.
+Tipografia            | Archivo Black / Archivo / Space Mono | Fontes carregadas pelo Google Fonts, com fallback para system-ui, -apple-system e Segoe UI.
+Ícones                | SVG inline                         | Sprite com 64 símbolos; nenhum ícone depende de biblioteca ou arquivo externo.
+Modal                 | <dialog> nativo                    | Abertura com showModal(), foco controlado, Esc e fechamento por backdrop.
+Navegação             | URL hash + History API             | Links profundos como #retrobright e integração com voltar/avançar do navegador.
+Persistência          | localStorage                       | Favoritos salvos no navegador com try/catch para ambientes bloqueados.
+Área de transferência | Clipboard API + fallback           | navigator.clipboard.writeText() e cópia alternativa via textarea/execCommand.
+Movimento             | matchMedia()                       | Respeito a prefers-reduced-motion.
+Testes                | Node.js + Chrome DevTools Protocol | Validação de dados e testes automatizados de interface; não fazem parte do runtime.
+
+3.2 O que não é usado
+
+- React, Vue, Angular ou qualquer framework de UI.
+- Tailwind, Bootstrap ou biblioteca de componentes.
+- Webpack, Vite, Parcel ou outro bundler.
+- Banco de dados, back-end ou API de conteúdo.
+- Sistema de rotas externo.
+- Dependências npm no runtime.
+
+A única requisição externa é o carregamento da fonte Inter no Google Fonts. Se ela falhar, a interface continua funcional com as fontes do sistema.
+
+==============================================================================
+
+4. Arquitetura
+--------------
+
+4.1 Estrutura do arquivo
+
+Tudo está dentro de index.html:
+
+1. <head> — metadados, fonte Inter e todo o CSS.
+2. Sprite SVG — símbolos de ícones reutilizáveis por <use href="#...">.
+3. Topbar — marca, identificação do arquivo e idioma.
+4. Hero — título, descrição, cartucho ilustrado e console de busca.
+5. Toolbar — filtros por categoria, favoritos, ordenação e termo aleatório.
+6. Results — grid de cards e estado vazio.
+7. Footer — assinatura, edição e total de termos.
+8. Modal e toast — ficha completa e avisos temporários.
+9. <script> — categorias, array de termos, estado, funções e eventos.
+
+4.2 Fluxo de funcionamento
+
+1. O array TERMOS é carregado e cada item recebe um número de ficha automático.
+2. Os favoritos são recuperados do localStorage.
+3. Os chips de categoria são montados com as contagens calculadas.
+4. O hash da URL é verificado; se corresponder a um termo, o modal abre.
+5. A lista é renderizada no grid.
+6. Busca, filtros, favoritos, ordenação e termo aleatório atualizam o estado e re-renderizam a lista.
+7. A ficha individual abre no <dialog>, com opções de copiar e favoritar.
+
+4.3 Estado da aplicação
+
+O estado principal fica em um objeto JavaScript:
+
+    const estado = {
+      busca: '',
+      categoria: 'todos',
+      favoritos: false,
+      ordem: 'padrao'
+    };
+
+Além dele, a aplicação mantém:
+
+- favoritos: um Set com os IDs salvos.
+- termoAtual: o verbete aberto no modal.
+- ultimoFoco: o elemento que abriu o modal, para devolver o foco ao fechar.
+- temporizadorToast: controle do aviso temporário.
+
+==============================================================================
+
+5. Dados do glossário
+---------------------
+
+5.1 Origem
+
+Os dados são próprios do projeto, escritos manualmente e embutidos no JavaScript. Não há API, CMS, banco de dados ou importação automática. Cada termo foi revisado para ter definição curta, exemplo de uso e uma curiosidade.
+
+5.2 Modelo de um termo
+
+    {
+      id: 'retrobright',
+      termo: 'Retrobright',
+      categoria: 'hardware',
+      icone: 'ic-sun',
+      definicao: 'Técnica caseira para clarear plásticos ABS amarelados...',
+      exemplo: 'Deixei a carcaça do Super Nintendo no retrobright...',
+      curiosidade: 'O amarelamento é causado pela degradação do bromo...'
+    }
+
+Campos:
+
+Campo       | Obrigatório | Descrição
+------------+-------------+--------------------------------------------------------------------
+id          | Sim         | Identificador único usado em URLs, favoritos e buscas internas.
+termo       | Sim         | Nome exibido no card e no modal.
+expansao    | Não         | Significado da sigla ou nome completo, quando aplicável.
+categoria   | Sim         | Uma das quatro chaves: hardware, emulacao, jogabilidade ou cultura.
+icone       | Sim         | ID de um símbolo do sprite SVG, como ic-cfw ou ic-target.
+definicao   | Sim         | Explicação objetiva, com no máximo duas frases.
+exemplo     | Sim         | Frase de uso cotidiano do termo.
+curiosidade | Sim         | Informação extra para a ficha completa.
+numero      | Gerado      | Número de catálogo calculado automaticamente pela posição no array.
+
+5.3 Categorias
+
+Chave        | Nome exibido      | Código | Cor (texto) | Cor (viva)
+-------------+-------------------+--------+-------------+-----------
+hardware     | Hardware/Mod      | HW     | #0032a8     | #0042d6
+emulacao     | Emulação          | EM     | #01722f     | #01a347
+jogabilidade | Jogabilidade      | JB     | #c21b5a     | #fc3b7f
+cultura      | Cultura & Mercado | CT     | #c41204     | #f4260f
+
+5.4 Índice completo dos 74 termos
+
+Hardware/Mod (17)
+
+Brick · CFW · Overclock · Modchip · Retrobright · Recap · FPGA · Upscaler · CRT · Cartucho · Flashcart · Region Lock · Jailbreak · Solda · Arcade Stick · Pasta Térmica · Case Mod
+
+Emulação (17)
+
+Save State · Homebrew · Port · ROM · BIOS · Emulador · Core · Frame Skip · Fast Forward · Shader CRT · Netplay · Frontend · Translation Patch · IPS Patch · Hardware Emulation · ROM Hack · Cheat Code
+
+Jogabilidade (21)
+
+Grinding · Nerf · Buff · Lag · RNG · Combo · Hitbox · I-frames · Parry · Aggro · Kiting · Tank · DPS · Meta · Clutch · Gank · Smurf · AFK · Ping · Matchmaking · New Game+
+
+Cultura & Mercado (19)
+
+Backlog · Speedrun · Easter Egg · DLC · Indie · AAA · Early Access · Loot Box · Microtransação · Battle Pass · eSports · Cosplay · Remaster · Remake · Abandonware · Preservação · Crunch · Retrogaming · Console War
+
+5.5 Regras de qualidade do conteúdo
+
+- Definições com no máximo duas frases.
+- Exemplos escritos como situações reais de uso.
+- Curiosidades com informação histórica, técnica ou cultural.
+- IDs únicos e estáveis.
+- Cada termo referencia um ícone existente no sprite.
+- Categorias e contagens são calculadas a partir dos dados, não de listas paralelas.
+
+==============================================================================
+
+6. Funcionalidades
+------------------
+
+6.1 Busca instantânea
+
+- Busca em tempo real enquanto o usuário digita.
+- Pesquisa em termo, expansão, definição, exemplo e nome da categoria.
+- Ignora maiúsculas, minúsculas e acentos, usando normalização NFD.
+- Suporta múltiplos termos com lógica AND: todos os tokens precisam existir.
+- Destaca os trechos encontrados com <mark>, inclusive em palavras acentuadas.
+- Combina a busca com o filtro de categoria e o filtro de favoritos.
+- Atualiza o contador de resultados e seu aria-label.
+
+Exemplos:
+
+- emulacao encontra termos da categoria Emulação e conteúdos que mencionem o assunto.
+- microtransacao encontra Microtransação, mesmo sem acento.
+- retrobright retorna apenas a ficha correspondente.
+
+6.2 Filtros e ordenação
+
+- Chips para Todos, Hardware/Mod, Emulação, Jogabilidade, Cultura & Mercado e Favoritos.
+- Contagens atualizadas automaticamente em cada chip.
+- Ordenação Padrão (ordem editorial do array) ou A–Z.
+- A ordenação A–Z usa localeCompare('pt-BR', { sensitivity: 'base' }).
+- Botão Termo aleatório sorteia um item da lista atualmente visível e abre sua ficha.
+- O sorteio evita repetir o termo que já está aberto, quando há mais de uma opção.
+
+6.3 Cards
+
+Cada card apresenta:
+
+- Ícone da categoria/termo.
+- Número de catálogo fixo, como Nº 17.
+- Categoria com código e cor.
+- Nome do termo e expansão opcional.
+- Definição.
+- Exemplo em bloco de citação com prefixo >.
+- Botão de favorito.
+- Link Ler ficha para abrir o modal.
+
+Os cards têm elevação e brilho no hover e entrada escalonada na primeira renderização. A animação é reduzida quando o usuário prefere menos movimento.
+
+6.4 Ficha em modal
+
+A ficha completa exibe:
+
+- Ícone, categoria, nome e expansão.
+- Definição completa.
+- Exemplo de uso.
+- Curiosidade.
+- Botão Copiar definição.
+- Botão para favoritar/desfavoritar.
+
+O botão de cópia monta um texto no formato:
+
+    Termo (Expansão): definição
+
+Após copiar, o rótulo muda temporariamente para Definição copiada. Se o clipboard for bloqueado, há fallback e mensagem de erro.
+
+6.5 Favoritos
+
+- Favoritos são mantidos em um Set e persistidos no localStorage.
+- Chave utilizada: gg-favoritos-v1.
+- Formato salvo: uma lista JSON de IDs, por exemplo ["modchip", "retrobright"].
+- O coração do card e o botão do modal permanecem sincronizados.
+- O chip Favoritos mostra a quantidade salva.
+- A filtragem por favoritos combina com busca e ordenação.
+- Ao remover um favorito dentro da visão de favoritos, o card sai da lista e o foco é reposicionado.
+- Falhas de localStorage são tratadas com try/catch; os favoritos continuam válidos na sessão.
+
+6.6 Links profundos e histórico
+
+- Cada termo tem uma URL própria com hash, como #brick ou #console-war.
+- Abrir a página com um hash válido já abre a ficha correspondente.
+- hashchange e popstate sincronizam o modal com o navegador.
+- Fechar o modal limpa o hash.
+- O botão voltar do navegador fecha o modal sem recarregar a página.
+
+6.7 Estados vazios
+
+A mensagem muda conforme o contexto:
+
+- Nenhum resultado para a busca atual.
+- Nenhum favorito salvo ainda.
+- Nenhum termo visível para o sorteio.
+- Botão Limpar busca e filtros para restaurar a listagem.
+
+6.8 Avisos
+
+Um toast com role="status" e aria-live="polite" informa ações como:
+
+- Termo aleatório sem resultados disponíveis.
+- Definição copiada.
+- Falha ao copiar.
+
+==============================================================================
+
+7. Design e experiência
+-----------------------
+
+7.1 Conceito visual
+
+A identidade segue a ideia de um arquivo/catálogo de cartuchos:
+
+- Fichas numeradas e organizadas como um acervo.
+- Cartucho ilustrado no hero como objeto-assinatura.
+- Grid e scanlines discretas ao fundo.
+- Faixa colorida no topo de cada card indicando a categoria.
+- Exemplos em estilo terminal, com o prefixo >.
+- Microtipografia monoespaçada em metadados e códigos.
+
+7.2 Paleta
+
+Token     | Cor                   | Uso
+----------+-----------------------+-------------------------------------------------
+--bg      | #fef1cf               | Papel creme: fundo geral da página.
+--surface | #fff7e3               | Cards e superfícies (creme claro).
+--border  | rgba(8,27,84,.14)     | Bordas de tinta azul, sutis.
+--text    | #081b54               | Texto principal (azul-tinta escuro).
+--muted   | #3f5190               | Texto secundário.
+--accent  | #0032a8               | Azul: ações, rodapé, ordenação ativa.
+--pink    | #fc3b7f / #c21b5a     | Rosa: favoritos, aleatório, foco e contorno do título.
+--acid    | #b9fc01               | Lima ácida: LED, chip ativo, marca-texto, tela CRT.
+--crt     | #0a0f2e               | Azul-noite: tela de busca, toast e telas decorativas.
+--cat     | variável por card     | Cor da categoria (texto seguro e versão viva).
+
+Tema "manual de fliperama": papel creme + tinta azul, com rosa, lima ácida,
+verde e vermelho reservados a papéis específicos.
+
+7.3 Tipografia
+
+- Archivo Black para títulos e nomes de termos (peso de pôster).
+- Archivo para corpo de texto e botões.
+- Space Mono para microtipografia de arquivo (fichas, códigos, contador e metadados).
+- Escala editorial no título principal, com clamp() para adaptação fluida.
+- Segunda linha do título em contorno rosa (-webkit-text-stroke), com fallback sólido.
+- Fallback para fontes do sistema se o Google Fonts não carregar.
+
+7.4 Layout e responsividade
+
+- Grid com repeat(auto-fill, minmax(270px, 1fr)).
+- Até 4 colunas em telas largas.
+- 1 coluna em telas pequenas.
+- Breakpoints principais em 1100px, 1080px, 900px, 640px e 380px.
+- Em telas menores, o cartucho do hero é ocultado, os filtros quebram linha e o modal ocupa quase toda a largura.
+- Testado sem rolagem horizontal em 360px e 1440px.
+
+7.5 Movimento
+
+- Entrada escalonada dos cards.
+- Elevação e brilho no hover.
+- Transições suaves de filtragem.
+- Rotação do dado no sorteio.
+- Modal com animação de abertura/fechamento.
+- Tudo reduzido ou desativado com prefers-reduced-motion: reduce.
+
+==============================================================================
+
+8. Acessibilidade e teclado
+---------------------------
+
+- lang="pt-BR" no documento.
+- Link Pular para o glossário.
+- Estrutura semântica com header, main, section, footer e títulos hierárquicos.
+- Foco visível com :focus-visible.
+- Rótulos acessíveis em busca, botões de favorito e ações do modal.
+- aria-pressed nos filtros, ordenação e favoritos.
+- aria-live no contador e nos avisos.
+- <dialog> nativo para ficha, com foco inicial no botão de fechar.
+- Armadilha de foco dentro do modal enquanto ele está aberto.
+- Fechamento com Esc, botão de fechar e clique fora do diálogo.
+- Devolução do foco ao elemento que abriu o modal.
+- Atalho / para focar a busca, ignorado quando o usuário está digitando ou com modal aberto.
+- Suporte a navegação por Tab e ativação por Enter/Espaço nos controles nativos.
+- Preferência de movimento reduzido respeitada.
+
+==============================================================================
+
+9. Como executar
+----------------
+
+Requisitos: navegador moderno com suporte a <dialog>, color-mix() e backdrop-filter. Versões muito antigas podem perder parte dos efeitos visuais, mas o conteúdo continua acessível.
+
+Opção 1 — abrir diretamente
+
+Abra index.html no navegador.
+
+Essa opção funciona para leitura e navegação, mas alguns navegadores restringem clipboard ou localStorage em URLs file://.
+
+Opção 2 — servidor estático local
+
+Na pasta do projeto, execute um dos comandos abaixo:
+
+    # Python 3
+    python -m http.server 8088
+
+    # Node.js com npx
+    npx serve .
+
+Depois acesse:
+
+    http://127.0.0.1:8088
+
+Durante a entrega, a prévia foi servida em http://127.0.0.1:8088. Esse servidor é local e pode não continuar disponível após o encerramento da sessão.
+
+==============================================================================
+
+10. Como adicionar ou editar um termo
+-------------------------------------
+
+1. Abra index.html e localize o array const TERMOS = [...].
+2. Adicione um objeto com id, termo, categoria, icone, definicao, exemplo e curiosidade.
+3. Use um id único, em minúsculas e sem acentos, para o hash e os favoritos.
+4. Escolha um símbolo existente do sprite ou crie um novo <symbol> no bloco SVG.
+5. Se o termo tiver sigla, adicione expansao.
+6. O número de catálogo será gerado automaticamente pela posição no array.
+7. Atualize os totais estáticos do HTML: metadados, topbar, texto do hero, cartucho, contador inicial e rodapé.
+8. Se o total mudar, confira os chips; eles recalculam as contagens automaticamente.
+9. Valide a sintaxe do JavaScript e abra a página para testar busca, filtro, modal e responsividade.
+
+Exemplo de novo termo
+
+    {
+      id: 'meu-termo',
+      termo: 'Meu Termo',
+      categoria: 'jogabilidade',
+      icone: 'ic-target',
+      definicao: 'Explicação curta e objetiva. Segunda frase opcional.',
+      exemplo: 'Frase que mostra o termo sendo usado na prática.',
+      curiosidade: 'Informação extra para a ficha completa.'
+    }
+
+==============================================================================
+
+11. Validação e testes realizados
+---------------------------------
+
+11.1 Validação de dados
+
+- Sintaxe do bloco JavaScript verificada.
+- Total confirmado: 74 termos.
+- Contagens por categoria: 17 / 17 / 21 / 19.
+- 74 IDs únicos.
+- Todos os campos obrigatórios presentes.
+- Todas as referências de ícone existem no sprite.
+- Definições dentro do limite de duas frases.
+- Nenhum termo duplicado.
+- Nenhum problema encontrado na última validação.
+
+11.2 Testes funcionais automatizados
+
+Executados com Chrome headless via Chrome DevTools Protocol:
+
+- 74 cards no estado inicial.
+- Contador inicial de 74 termos.
+- Chips com contagens corretas.
+- Rodapé com autoria e total.
+- Todos os ícones dos cards resolvidos.
+- Atalho / focando a busca.
+- Busca por retrobright retornando um card.
+- Busca sem acento por microtransacao encontrando Microtransação.
+- Destaque de trechos com <mark>.
+- Filtro Hardware/Mod retornando 17 termos.
+- Ordenação A–Z começando por AAA.
+- Modal abrindo com título, curiosidade, hash e botão de cópia.
+- Esc fechando o modal e limpando o hash.
+- Favorito filtrando um termo e persistindo no localStorage.
+- Persistência de favorito após recarregar.
+- Ausência de rolagem horizontal em 360px e 1440px.
+- Nenhum erro de console.
+
+11.3 Inspeção visual
+
+- Layout verificado em larguras de 360px a 1440px.
+- Conferência de cards, ícones, chips, busca, cartucho, modal, rodapé e estados vazios.
+- Conferência de hover, elevação e destaques de categoria.
+
+==============================================================================
+
+12. Limitações atuais
+---------------------
+
+- O conteúdo é estático: não há painel administrativo nem banco de dados.
+- Adicionar ou editar termos exige alterar o index.html.
+- Os totais estáticos do HTML precisam ser atualizados manualmente quando o número de termos mudar.
+- Favoritos são locais ao navegador e não sincronizam entre dispositivos.
+- A fonte Inter depende de conexão com o Google Fonts; há fallback, mas o visual pode variar.
+- Não há autenticação, analytics, exportação de favoritos ou suporte multilíngue.
+- O projeto é local e não possui repositório Git configurado.
+
+13. Próximas evoluções possíveis
+--------------------------------
+
+- Separar os dados em um arquivo JSON para facilitar manutenção.
+- Criar um pequeno CMS ou painel de edição.
+- Adicionar PWA/offline com service worker.
+- Exportar e importar favoritos.
+- Sincronizar filtros na URL.
+- Incluir mais termos e revisões editoriais.
+- Adicionar testes automatizados em CI.
+- Criar versões em outros idiomas.
+- Incluir modo de leitura e ajustes de contraste.
+
+==============================================================================
+
+14. Estrutura de arquivos
+-------------------------
+
+    Glossario/
+    ├─ index.html          # Aplicação completa: HTML + CSS + JS + dados + SVG
+    ├─ DOCUMENTACAO.md     # Documentação em Markdown
+    ├─ DOCUMENTACAO.txt    # Documentação em texto puro
+    ├─ .agents/            # Skill de apoio ao design (não usada em runtime)
+    └─ skills-lock.json    # Registro da skill instalada (não usado em runtime)
+
+Arquivos de teste, servidores temporários e capturas de tela usados durante o desenvolvimento ficam fora da pasta do projeto.
+
+==============================================================================
+
+15. Créditos
+------------
+
+- Criação e conteúdo: kaio.
+- Direção visual: identidade de arquivo/cartucho, apoiada pela skill frontend-design.
+- Tipografia: Inter, disponibilizada pelo Google Fonts.
+- Implementação: HTML, CSS e JavaScript puros, com apoio de testes automatizados via Chrome DevTools Protocol.
+- Edição: 01.
+
+==============================================================================
+
+Resumo final: o sistema é um glossário navegável de 74 termos, organizado em quatro categorias, com busca instantânea, filtros, favoritos persistentes, modal de ficha, links profundos e layout responsivo, tudo em um único index.html sem dependências de runtime além da fonte Inter.

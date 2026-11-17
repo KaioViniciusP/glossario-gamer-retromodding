@@ -1,0 +1,3040 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fef1cf">
+  <meta name="description" content="Glossário interativo do universo gamer e retromodding: 74 termos sobre hardware, emulação, jogabilidade e cultura dos jogos.">
+  <title>Glossário Gamer &amp; Retromodding</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400..800;1,400..700&family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================
+       01 · TOKENS E BASE
+       ========================================================= */
+    :root {
+      /* Papel de manual de fliperama: creme, tinta azul, rosa e lima ácida */
+      --bg: #fef1cf;
+      --surface: #fff7e3;
+      --surface-2: #ffedc4;
+      --surface-3: #ffe9b8;
+      --border: rgba(8, 27, 84, .14);
+      --border-strong: rgba(8, 27, 84, .28);
+      --text: #081b54;
+      --muted: #3f5190;
+      --muted-2: #4d5d97;
+      --accent: #0032a8;
+      --accent-bright: #0042d6;
+      --accent-soft: rgba(0, 50, 168, .1);
+      --pink: #fc3b7f;
+      --pink-deep: #c21b5a;
+      --pink-soft: rgba(252, 59, 127, .12);
+      --acid: #b9fc01;
+      --acid-soft: rgba(185, 252, 1, .2);
+      --crt: #0a0f2e;
+      --crt-2: #0d1238;
+      --radius: 14px;
+      --radius-sm: 9px;
+      --max: 1280px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+      --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-display: "Archivo Black", "Archivo", system-ui, sans-serif;
+      --font-mono: "Space Mono", ui-monospace, "Courier New", monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    html {
+      background: var(--bg);
+      scroll-behavior: smooth;
+      scrollbar-gutter: stable;
+      -webkit-text-size-adjust: 100%;
+    }
+    html.modal-aberto { overflow: hidden; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: clip;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    ::selection {
+      background: var(--acid);
+      color: var(--text);
+    }
+
+    h1, h2, h3, p, blockquote { margin: 0; }
+    button, input { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    svg { display: block; }
+    a { color: inherit; }
+
+    :focus-visible {
+      outline: 2px solid var(--pink-deep);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .sr-only {
+      position: absolute !important;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 12px; left: 12px;
+      z-index: 200;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: var(--acid);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transform: translateY(-160%);
+      transition: transform .2s var(--ease);
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .wrap {
+      width: min(100% - 80px, var(--max));
+      margin-inline: auto;
+    }
+
+    .sprite {
+      position: absolute;
+      width: 0; height: 0;
+      overflow: hidden;
+    }
+
+    /* Textura de fundo: grade + brilhos muito contidos */
+    .page-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(52% 38% at 10% -4%, rgba(252, 59, 127, .08), transparent 70%),
+        radial-gradient(46% 34% at 92% 6%, rgba(185, 252, 1, .14), transparent 72%),
+        radial-gradient(60% 50% at 50% 110%, rgba(0, 50, 168, .055), transparent 75%);
+    }
+    .page-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(8, 27, 84, .05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(8, 27, 84, .05) 1px, transparent 1px);
+      background-size: 72px 72px;
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, .65) 42%, transparent 88%);
+      mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, .65) 42%, transparent 88%);
+    }
+
+    /* =========================================================
+       02 · CABEÇALHO
+       ========================================================= */
+    .topbar {
+      position: relative;
+      z-index: 40;
+      border-bottom: 1px solid var(--border);
+      background: rgba(254, 241, 207, .78);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+    }
+    .topbar__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 68px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+    .brand__mark {
+      display: grid;
+      place-items: center;
+      width: 34px; height: 34px;
+      border: 1px solid rgba(0, 50, 168, .38);
+      border-radius: 8px;
+      background: linear-gradient(145deg, #fff9ea, #ffedc4);
+      color: var(--accent);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 0 18px -8px rgba(0, 50, 168, .55);
+      flex: 0 0 auto;
+    }
+    .brand__mark svg { width: 17px; height: 17px; }
+    .brand__text { display: flex; flex-direction: column; line-height: 1.15; }
+    .brand__text strong {
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: -.01em;
+    }
+    .brand__text span {
+      margin-top: 3px;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+    }
+    .topbar__meta {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      white-space: nowrap;
+    }
+    .topbar__led {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--acid);
+      box-shadow: 0 0 0 2px rgba(8, 27, 84, .18), 0 0 10px rgba(133, 197, 0, .85);
+      animation: ledPulse 4.5s ease-in-out infinite;
+    }
+    .topbar__sep { width: 1px; height: 11px; background: var(--border-strong); }
+    @keyframes ledPulse {
+      0%, 100% { opacity: .55; }
+      50% { opacity: 1; }
+    }
+
+    /* =========================================================
+       03 · HERO
+       ========================================================= */
+    .hero {
+      position: relative;
+      padding: 70px 0 58px;
+      isolation: isolate;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        180deg,
+        rgba(8, 27, 84, .06) 0 1px,
+        transparent 1px 4px
+      );
+      opacity: .5;
+      -webkit-mask-image: linear-gradient(to bottom, #000, transparent 86%);
+      mask-image: linear-gradient(to bottom, #000, transparent 86%);
+    }
+    .hero__grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.42fr) minmax(270px, .58fr);
+      align-items: center;
+      gap: 48px;
+    }
+    .hero__copy { min-width: 0; }
+
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+    }
+    .kicker__rule {
+      display: inline-block;
+      width: 26px; height: 1px;
+      background: var(--pink);
+      box-shadow: 0 0 10px rgba(252, 59, 127, .55);
+    }
+    .kicker__dot {
+      width: 4px; height: 4px;
+      background: var(--acid);
+      border-radius: 1px;
+      box-shadow: 0 0 8px rgba(133, 197, 0, .8);
+    }
+
+    h1 {
+      max-width: 15ch;
+      font-family: var(--font-display);
+      font-size: clamp(2.35rem, 10.8vw, 5.6rem);
+      font-weight: 400;
+      line-height: .94;
+      letter-spacing: -.02em;
+      text-wrap: balance;
+    }
+    .h1-line { display: block; }
+    .h1-line--ghost {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--pink);
+    }
+    .h1-line--ghost .h1-amp {
+      color: var(--pink);
+      -webkit-text-stroke: 0;
+    }
+    .h1-amp {
+      font-style: italic;
+      font-weight: 600;
+      letter-spacing: -.03em;
+    }
+    @supports not (-webkit-text-stroke: 1px #000) {
+      .h1-line--ghost { color: var(--pink); }
+    }
+
+    .lede {
+      max-width: 53ch;
+      margin-top: 24px;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--muted);
+      text-wrap: pretty;
+    }
+    .lede strong {
+      color: var(--text);
+      font-weight: 700;
+      background-image: linear-gradient(var(--acid), var(--acid));
+      background-size: 100% .4em;
+      background-position: 0 82%;
+      background-repeat: no-repeat;
+    }
+
+    /* Cartucho decorativo — objeto-assinatura da página */
+    .cartridge-wrap {
+      position: relative;
+      justify-self: end;
+      width: min(252px, 100%);
+      padding: 12px 8px 26px;
+    }
+    .cartridge-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 18% 8% 4%;
+      z-index: -1;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(252, 59, 127, .14), rgba(185, 252, 1, .12) 48%, transparent 72%);
+      filter: blur(34px);
+    }
+    .cartridge {
+      position: relative;
+      aspect-ratio: 4 / 4.85;
+      padding: 26px 16px 34px;
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 16px 16px 7px 7px;
+      background:
+        linear-gradient(118deg, rgba(255, 255, 255, .075), transparent 26%),
+        linear-gradient(155deg, #1d2350 0%, #131737 52%, #0b0e22 100%);
+      box-shadow:
+        0 34px 60px -28px rgba(0, 0, 0, .95),
+        0 2px 0 rgba(255, 255, 255, .04) inset,
+        0 -10px 24px rgba(0, 0, 0, .38) inset;
+      transform: rotate(-3.5deg);
+      transition: transform .5s var(--ease), box-shadow .5s var(--ease);
+    }
+    .cartridge::before {
+      content: "";
+      position: absolute;
+      top: -1px; left: 50%;
+      width: 38%; height: 13px;
+      transform: translateX(-50%);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-top: 0;
+      border-radius: 0 0 7px 7px;
+      box-shadow: 0 3px 7px rgba(0, 0, 0, .45) inset;
+    }
+    .cartridge::after {
+      content: "";
+      position: absolute;
+      right: 7px; top: 38%;
+      width: 3px; height: 42px;
+      border-radius: 2px;
+      background: repeating-linear-gradient(180deg, rgba(0, 0, 0, .45) 0 2px, transparent 2px 5px);
+    }
+    @media (hover: hover) {
+      .cartridge-wrap:hover .cartridge {
+        transform: rotate(-1.5deg) translateY(-4px);
+        box-shadow:
+          0 42px 70px -30px rgba(0, 0, 0, .98),
+          0 0 34px -18px rgba(252, 59, 127, .55),
+          0 2px 0 rgba(255, 255, 255, .05) inset,
+          0 -10px 24px rgba(0, 0, 0, .38) inset;
+      }
+    }
+
+    .cartridge__label {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 11px 12px 12px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 50, 168, .38);
+      border-radius: 8px;
+      background:
+        linear-gradient(160deg, rgba(252, 59, 127, .08), transparent 42%),
+        linear-gradient(180deg, #fff7e3, #ffedc9);
+      box-shadow: 0 0 24px rgba(0, 50, 168, .08) inset;
+    }
+    .cartridge__label::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(180deg, rgba(8, 27, 84, .05) 0 1px, transparent 1px 3px);
+      opacity: .5;
+    }
+    .cartridge__meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      position: relative;
+      font-size: 7.5px;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--pink-deep);
+    }
+    .cartridge__glyph {
+      position: relative;
+      width: 56%;
+      margin: 18px auto 14px;
+      color: var(--pink-deep);
+      filter: drop-shadow(0 0 12px rgba(252, 59, 127, .35));
+    }
+    .cartridge__name {
+      position: relative;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.28;
+      letter-spacing: -.01em;
+      color: var(--text);
+    }
+    .cartridge__name span { display: block; color: var(--muted-2); font-weight: 500; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; margin-top: 5px; }
+    .cartridge__foot {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0, 50, 168, .25);
+      font-size: 7.5px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+    }
+    .cartridge__foot-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--pink);
+      box-shadow: 0 0 6px rgba(252, 59, 127, .8);
+    }
+    .cartridge__pins {
+      position: absolute;
+      left: 17%; right: 17%; bottom: 10px;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 4px;
+    }
+    .cartridge__pins span {
+      height: 9px;
+      border-radius: 1px;
+      background: linear-gradient(180deg, #a98f60, #6d5c3e);
+      opacity: .42;
+    }
+
+    /* =========================================================
+       04 · CONSOLE DE BUSCA
+       ========================================================= */
+    .console {
+      margin-top: 46px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, #fff8e7, #ffedc4);
+      box-shadow:
+        0 28px 60px -38px rgba(8, 27, 84, .55),
+        0 1px 0 rgba(255, 255, 255, .8) inset;
+    }
+    .console__bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8, 27, 84, .04);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+    }
+    .console__led {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--acid);
+      box-shadow: 0 0 7px rgba(133, 197, 0, .9);
+    }
+    .console__hint {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      letter-spacing: .06em;
+      text-transform: none;
+      font-size: 10px;
+      color: var(--muted-2);
+    }
+    kbd {
+      display: inline-grid;
+      place-items: center;
+      min-width: 20px; height: 19px;
+      padding: 0 5px;
+      border: 1px solid var(--border-strong);
+      border-bottom-color: rgba(8, 27, 84, .45);
+      border-radius: 4px;
+      background: #fffdf5;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--muted);
+      box-shadow: 0 1px 0 rgba(8, 27, 84, .3);
+    }
+    .console__screen {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 62px;
+      margin: 11px;
+      padding: 0 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      position: relative;
+      background: var(--crt);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .35) inset;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .console__screen:focus-within {
+      border-color: rgba(185, 252, 1, .65);
+      box-shadow:
+        0 0 0 3px rgba(185, 252, 1, .16),
+        0 2px 10px rgba(0, 0, 0, .35) inset,
+        0 0 26px -8px rgba(185, 252, 1, .5);
+    }
+    .console__screen::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(180deg, rgba(185, 252, 1, .05) 0 1px, transparent 1px 3px);
+    }
+    .console__search-icon {
+      width: 19px; height: 19px;
+      flex: 0 0 auto;
+      color: #7c8bc0;
+      transition: color .2s ease;
+    }
+    .console__screen:focus-within .console__search-icon { color: var(--acid); }
+    #busca {
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--acid);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    #busca::placeholder { color: #6f7cc0; opacity: 1; }
+    #busca::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+    .console__counter {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      flex: 0 0 auto;
+      padding-left: 14px;
+      border-left: 1px solid rgba(255, 255, 255, .14);
+      font-size: 10px;
+      font-weight: 500;
+      color: #8b96cf;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .console__counter strong {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--acid);
+      letter-spacing: -.02em;
+      transition: color .2s ease;
+    }
+    .console__counter strong.is-zero { color: #6f7cc0; }
+    .console__kbd { flex: 0 0 auto; }
+
+    /* =========================================================
+       05 · BARRA DE FILTROS
+       ========================================================= */
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(254, 241, 207, .88);
+      -webkit-backdrop-filter: blur(16px) saturate(1.1);
+      backdrop-filter: blur(16px) saturate(1.1);
+      box-shadow: 0 16px 34px -30px rgba(8, 27, 84, .45);
+    }
+    .toolbar__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px 20px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+    }
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 34px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(255, 252, 240, .6);
+      color: #33427e;
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: -.005em;
+      white-space: nowrap;
+      transition:
+        color .18s ease,
+        background-color .18s ease,
+        border-color .18s ease,
+        transform .18s ease;
+    }
+    .chip:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+      background: #fffdf5;
+    }
+    .chip:active { transform: scale(.975); }
+    .chip__count {
+      display: inline-grid;
+      place-items: center;
+      min-width: 20px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 4px;
+      background: rgba(8, 27, 84, .08);
+      color: var(--muted);
+      font-size: 9.5px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      transition: background-color .18s ease, color .18s ease;
+    }
+    .chip.is-active {
+      border-color: var(--accent);
+      background: var(--acid);
+      color: var(--text);
+      box-shadow: 0 0 22px -10px rgba(133, 197, 0, .95);
+    }
+    .chip.is-active .chip__count {
+      background: rgba(8, 27, 84, .16);
+      color: var(--text);
+    }
+    .chip--fav .chip__icon {
+      width: 13px; height: 13px;
+      color: #9c5c86;
+      transition: color .18s ease;
+    }
+    .chip--fav:hover .chip__icon { color: var(--pink-deep); }
+    .chip--fav.is-active {
+      border-color: rgba(194, 27, 90, .55);
+      background: var(--pink-soft);
+      color: #7c1247;
+      box-shadow: 0 0 20px -12px rgba(252, 59, 127, .9);
+    }
+    .chip--fav.is-active .chip__icon { color: var(--pink-deep); }
+    .chip--fav.is-active .chip__count {
+      background: rgba(194, 27, 90, .18);
+      color: #7c1247;
+    }
+    .filters__sep {
+      width: 1px;
+      height: 18px;
+      margin: 0 3px;
+      background: var(--border-strong);
+    }
+
+    .toolbar__actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .sort {
+      display: inline-flex;
+      gap: 2px;
+      padding: 2px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(8, 27, 84, .08);
+    }
+    .sort__btn {
+      min-height: 28px;
+      padding: 0 9px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: .01em;
+      transition: color .18s ease, background-color .18s ease;
+    }
+    .sort__btn:hover { color: var(--text); }
+    .sort__btn.is-active {
+      background: var(--accent);
+      color: #fff7e3;
+      box-shadow: 0 1px 2px rgba(8, 27, 84, .4);
+    }
+    .btn-random {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 34px;
+      padding: 0 12px;
+      border: 1px solid rgba(194, 27, 90, .4);
+      border-radius: 8px;
+      background: var(--pink-soft);
+      color: #9c1449;
+      font-size: 11.5px;
+      font-weight: 500;
+      transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
+    }
+    .btn-random svg { width: 15px; height: 15px; color: var(--pink); }
+    .btn-random:hover {
+      border-color: rgba(194, 27, 90, .65);
+      background: rgba(252, 59, 127, .2);
+    }
+    .btn-random:active { transform: scale(.98); }
+
+    /* =========================================================
+       06 · GRID E CARDS
+       ========================================================= */
+    .results { padding: 34px 0 72px; min-height: 320px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 16px;
+      align-items: stretch;
+    }
+    .grid.is-filtrado .card { animation-duration: .3s; }
+
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .55), transparent 30%),
+        var(--surface);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset;
+      transition:
+        transform .28s var(--ease),
+        border-color .28s ease,
+        box-shadow .28s ease;
+      animation: cardIn .5s var(--ease) backwards;
+      animation-delay: var(--delay, 0ms);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cat-vivid, var(--cat)), color-mix(in srgb, var(--cat-vivid, var(--cat)) 30%, transparent) 42%, transparent 78%);
+      opacity: .8;
+      transition: opacity .28s ease;
+    }
+    .card.is-destaque {
+      animation: destaqueCard 1.4s var(--ease);
+      border-color: color-mix(in srgb, var(--cat-vivid, var(--cat)) 55%, transparent);
+    }
+    @media (hover: hover) {
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: color-mix(in srgb, var(--cat-vivid, var(--cat)) 45%, transparent);
+        box-shadow:
+          0 22px 42px -26px rgba(8, 27, 84, .45),
+          0 0 0 1px color-mix(in srgb, var(--cat-vivid, var(--cat)) 15%, transparent),
+          0 0 30px -16px color-mix(in srgb, var(--cat-vivid, var(--cat)) 55%, transparent);
+      }
+      .card:hover::before { opacity: .9; }
+      .card:hover .card__icon {
+        background: color-mix(in srgb, var(--cat) 18%, transparent);
+        border-color: color-mix(in srgb, var(--cat) 45%, transparent);
+      }
+      .card:hover .card__foot-icon {
+        color: var(--cat);
+        transform: translateX(3px);
+      }
+    }
+
+    .card__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .card__icon {
+      display: grid;
+      place-items: center;
+      width: 42px; height: 42px;
+      flex: 0 0 auto;
+      border: 1px solid color-mix(in srgb, var(--cat) 32%, transparent);
+      border-radius: 11px;
+      background: color-mix(in srgb, var(--cat) 11%, transparent);
+      color: var(--cat);
+      transition: background-color .25s ease, border-color .25s ease;
+    }
+    .card__icon svg { width: 21px; height: 21px; }
+    .card__tools {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .card__no {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      color: var(--muted-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .fav {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 32px; height: 32px;
+      padding: 0;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: #9c5c86;
+      transition: color .18s ease, background-color .18s ease, border-color .18s ease;
+    }
+    .fav svg { width: 16px; height: 16px; }
+    .fav svg path {
+      fill: transparent;
+      transition: fill .18s ease;
+    }
+    .fav:hover {
+      color: var(--pink-deep);
+      border-color: rgba(194, 27, 90, .3);
+      background: var(--pink-soft);
+    }
+    .fav.is-fav {
+      color: var(--pink-deep);
+      border-color: rgba(194, 27, 90, .4);
+      background: rgba(252, 59, 127, .16);
+    }
+    .fav.is-fav svg path { fill: currentColor; }
+
+    .card__cat {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 7px;
+      color: var(--cat);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .01em;
+    }
+    .card__cat-code {
+      padding: 1px 4px;
+      border: 1px solid color-mix(in srgb, var(--cat) 35%, transparent);
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      opacity: .9;
+    }
+    .card__title {
+      font-family: var(--font-display);
+      font-size: 1.28rem;
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -.01em;
+      color: var(--text);
+    }
+    .card__title a { text-decoration: none; }
+    .card__expand {
+      margin-top: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .035em;
+      color: var(--muted-2);
+    }
+    .card__def {
+      margin-top: 11px;
+      font-size: .885rem;
+      line-height: 1.62;
+      color: #3c4c8c;
+      text-wrap: pretty;
+    }
+    .card__def mark, .card__title mark, .card__example mark {
+      padding: 0 1px;
+      border-radius: 2px;
+      background: var(--acid);
+      color: var(--text);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .card__example {
+      margin: 14px 0 16px;
+      padding: 9px 11px;
+      border-left: 2px solid color-mix(in srgb, var(--cat-vivid, var(--cat)) 70%, transparent);
+      border-radius: 0 8px 8px 0;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--cat) 9%, transparent), transparent 90%);
+      font-size: .795rem;
+      line-height: 1.56;
+      color: #4a5a98;
+    }
+    .card__prompt {
+      margin-right: 3px;
+      color: var(--cat-vivid, var(--cat));
+      font-weight: 700;
+      opacity: .85;
+    }
+    .card__foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .02em;
+      color: var(--muted-2);
+    }
+    .card__foot-icon {
+      width: 14px; height: 14px;
+      color: var(--muted-2);
+      transition: transform .25s var(--ease), color .25s ease;
+    }
+    .card__link::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      border-radius: inherit;
+    }
+    .card:has(.card__link:focus-visible) {
+      outline: 2px solid var(--pink-deep);
+      outline-offset: 3px;
+    }
+
+    /* =========================================================
+       07 · ESTADO VAZIO
+       ========================================================= */
+    .empty {
+      max-width: 640px;
+      margin: 24px auto 0;
+      padding: 46px 24px 40px;
+      border: 1px dashed rgba(8, 27, 84, .32);
+      border-radius: 16px;
+      background:
+        radial-gradient(80% 70% at 50% 0%, rgba(185, 252, 1, .14), transparent 70%),
+        var(--surface);
+      text-align: center;
+      animation: cardIn .35s var(--ease) both;
+    }
+    .empty__screen {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 128px; height: 76px;
+      margin: 0 auto 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--crt);
+      box-shadow: 0 10px 24px -16px rgba(0, 0, 0, .8) inset;
+      color: #5b68b0;
+    }
+    .empty__screen svg { width: 30px; height: 30px; }
+    .empty__screen::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(180deg, rgba(255, 255, 255, .05) 0 1px, transparent 1px 3px);
+      opacity: .5;
+      pointer-events: none;
+    }
+    .empty__signal {
+      position: absolute;
+      left: 0; right: 0; bottom: 7px;
+      font-size: 7px;
+      font-weight: 600;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--acid);
+      text-align: center;
+    }
+    .empty h3 {
+      font-family: var(--font-display);
+      font-size: 1.28rem;
+      font-weight: 400;
+      letter-spacing: -.01em;
+    }
+    .empty p {
+      max-width: 42ch;
+      margin: 8px auto 20px;
+      font-size: .875rem;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 15px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+    }
+    .btn:active { transform: scale(.985); }
+    .btn svg { width: 15px; height: 15px; }
+    .btn--ghost {
+      border-color: var(--border-strong);
+      background: rgba(255, 255, 255, .03);
+      color: var(--text);
+    }
+    .btn--ghost:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .btn--primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--acid);
+      box-shadow: 0 10px 26px -14px rgba(0, 50, 168, .8);
+    }
+    .btn--primary:hover { background: var(--accent-bright); }
+    .btn--primary:disabled { cursor: default; opacity: .85; }
+
+    /* =========================================================
+       08 · RODAPÉ
+       ========================================================= */
+    .footer {
+      border-top: 1px solid var(--border);
+      background: var(--accent);
+      color: #cddcff;
+      padding: 24px 0 30px;
+    }
+    .footer__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .footer__brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--acid);
+    }
+    .footer__brand svg { width: 16px; height: 16px; opacity: .8; }
+    .footer p {
+      font-size: 11.5px;
+      color: rgba(255, 247, 227, .82);
+    }
+    .footer__link {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--acid);
+      border-bottom: 1px solid rgba(185, 252, 1, .45);
+      transition: color .18s ease, border-color .18s ease;
+    }
+    .footer__link:hover {
+      color: #fff7e3;
+      border-color: #fff7e3;
+    }
+    .footer__link span { display: inline-block; margin-left: 2px; }
+    .footer__meta {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      color: rgba(255, 247, 227, .62);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* =========================================================
+       09 · MODAL
+       ========================================================= */
+    .modal {
+      width: min(660px, calc(100vw - 32px));
+      max-height: min(88dvh, 780px);
+      padding: 0;
+      overflow: auto;
+      border: 1px solid rgba(8, 27, 84, .3);
+      border-radius: 16px;
+      background: var(--surface);
+      color: var(--text);
+      box-shadow:
+        0 50px 120px -40px rgba(8, 15, 60, .9),
+        0 1px 0 rgba(255, 255, 255, .8) inset;
+      overscroll-behavior: contain;
+    }
+    .modal::backdrop {
+      background: rgba(8, 15, 60, .58);
+      -webkit-backdrop-filter: blur(7px);
+      backdrop-filter: blur(7px);
+    }
+    .modal[open] { animation: modalIn .3s var(--ease) both; }
+    .modal[open]::backdrop { animation: fadeIn .25s ease both; }
+    .modal.is-closing { animation: modalOut .16s ease both; }
+    .modal.is-closing::backdrop { animation: fadeOut .16s ease both; }
+
+    .modal__bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 14px 11px 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, color-mix(in srgb, var(--cat, var(--accent)) 13%, transparent), transparent 62%);
+    }
+    .modal__file {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .icon-btn {
+      display: grid;
+      place-items: center;
+      width: 32px; height: 32px;
+      padding: 0;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted-2);
+      transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+    }
+    .icon-btn svg { width: 16px; height: 16px; }
+    .icon-btn:hover {
+      border-color: var(--border);
+      background: rgba(8, 27, 84, .07);
+      color: var(--text);
+    }
+    .modal__body { padding: 24px 26px 26px; }
+    .modal__head {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+    .modal__icon {
+      display: grid;
+      place-items: center;
+      width: 52px; height: 52px;
+      flex: 0 0 auto;
+      border: 1px solid color-mix(in srgb, var(--cat) 34%, transparent);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--cat) 12%, transparent);
+      color: var(--cat);
+    }
+    .modal__icon svg { width: 25px; height: 25px; }
+    .modal__heading { min-width: 0; padding-top: 1px; }
+    .modal__cat {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 5px;
+      color: var(--cat);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .modal__title {
+      font-size: clamp(1.7rem, 4vw, 2.1rem);
+      font-weight: 700;
+      line-height: 1.04;
+      letter-spacing: -.045em;
+    }
+    .modal__expand {
+      margin-top: 4px;
+      font-size: 10.5px;
+      color: var(--muted-2);
+    }
+    .modal__def {
+      font-size: .98rem;
+      line-height: 1.72;
+      color: #31407c;
+      text-wrap: pretty;
+    }
+    .modal__def mark, .modal__example mark,
+    .card__cat mark, .modal__cat mark {
+      padding: 0 1px;
+      border-radius: 2px;
+      background: var(--acid);
+      color: var(--text);
+    }
+    .modal__example {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-left: 2px solid color-mix(in srgb, var(--cat-vivid, var(--cat)) 70%, transparent);
+      border-radius: 0 9px 9px 0;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--cat) 9%, transparent), transparent 90%);
+      font-size: .86rem;
+      line-height: 1.62;
+      color: #4a5a98;
+    }
+    .modal__curio {
+      margin-top: 20px;
+      padding: 15px 16px;
+      border: 1px solid rgba(194, 27, 90, .35);
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(185, 252, 1, .18), rgba(185, 252, 1, .06));
+    }
+    .modal__curio-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 7px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--pink-deep);
+    }
+    .modal__curio-label svg { width: 13px; height: 13px; }
+    .modal__curio p {
+      font-size: .855rem;
+      line-height: 1.62;
+      color: #3c4c8c;
+    }
+    .modal__actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+    .modal__actions .btn { min-height: 42px; padding-inline: 16px; }
+    .btn--fav.is-fav {
+      border-color: rgba(194, 27, 90, .55);
+      background: rgba(252, 59, 127, .16);
+      color: #7c1247;
+    }
+    .btn--fav.is-fav svg path { fill: currentColor; }
+    .btn--fav svg path { fill: transparent; transition: fill .18s ease; }
+
+    /* =========================================================
+       10 · TOAST
+       ========================================================= */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 120;
+      max-width: calc(100vw - 40px);
+      padding: 10px 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: 9px;
+      background: var(--crt);
+      color: #fff7e3;
+      font-size: 11.5px;
+      border-color: rgba(185, 252, 1, .5);
+      box-shadow: 0 18px 40px -18px rgba(8, 15, 60, .9);
+      opacity: 0;
+      transform: translate(-50%, 14px);
+      pointer-events: none;
+      transition: opacity .2s ease, transform .25s var(--ease);
+    }
+    .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+
+    /* =========================================================
+       11 · ANIMAÇÕES
+       ========================================================= */
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes destaqueCard {
+      0%, 100% { box-shadow: 0 1px 0 rgba(255, 255, 255, .025) inset; }
+      30% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--cat-vivid, var(--cat)) 55%, transparent), 0 0 34px -12px color-mix(in srgb, var(--cat-vivid, var(--cat)) 65%, transparent); }
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(12px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes modalOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(6px) scale(.99); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+    /* =========================================================
+       12 · RESPONSIVO
+       ========================================================= */
+    @media (max-width: 1100px) {
+      .toolbar { position: static; }
+      .toolbar__inner { flex-direction: column; align-items: stretch; gap: 10px; }
+      .toolbar__actions { justify-content: flex-end; }
+    }
+    @media (max-width: 1080px) {
+      .hero__grid { grid-template-columns: minmax(0, 1.5fr) minmax(230px, .5fr); gap: 34px; }
+      .cartridge-wrap { width: min(224px, 100%); }
+    }
+    @media (min-width: 901px) and (max-width: 1100px) {
+      h1 { font-size: clamp(3.4rem, 8vw, 5rem); }
+    }
+    @media (max-width: 900px) {
+      .wrap { width: min(100% - 56px, var(--max)); }
+      .hero { padding: 56px 0 46px; }
+      .hero__grid { grid-template-columns: minmax(0, 1fr); gap: 30px; }
+      .cartridge-wrap {
+        display: none;
+      }
+      .toolbar { position: static; }
+      .toolbar__inner { padding: 13px 0; }
+      .filters { flex-wrap: wrap; }
+      .results { padding-top: 28px; }
+    }
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 40px, var(--max)); }
+      .topbar__inner { min-height: 60px; }
+      .brand__text span { display: none; }
+      .topbar__meta { font-size: 8.5px; letter-spacing: .11em; }
+      .topbar__meta .topbar__hide { display: none; }
+      .hero { padding: 40px 0 34px; }
+      .kicker { margin-bottom: 17px; font-size: 9px; letter-spacing: .16em; }
+      h1 { font-size: clamp(2.3rem, 10.8vw, 3.4rem); line-height: .96; }
+      .lede { margin-top: 18px; font-size: .925rem; line-height: 1.65; }
+      .console { margin-top: 30px; }
+      .console__bar { padding: 7px 11px; }
+      .console__hint { font-size: 9px; }
+      .console__screen { height: 56px; margin: 9px; padding: 0 12px; gap: 10px; }
+      #busca { font-size: .925rem; }
+      .console__counter { padding-left: 10px; font-size: 9px; gap: 4px; }
+      .console__counter strong { font-size: .95rem; }
+      .console__kbd { display: none; }
+      .toolbar__inner { align-items: stretch; gap: 10px; }
+      .filters { gap: 5px; }
+      .chip { min-height: 32px; padding-inline: 6px; font-size: 10.5px; gap: 4px; }
+      .chip__count { min-width: 18px; height: 17px; font-size: 9px; }
+      .filters__sep { display: none; }
+      .toolbar__actions { justify-content: space-between; }
+      .sort { flex: 0 0 auto; }
+      .btn-random { flex: 1 1 auto; justify-content: center; }
+      .results { padding: 24px 0 56px; }
+      .grid { grid-template-columns: minmax(0, 1fr); gap: 13px; }
+      .card { padding: 16px; }
+      .card__title { font-size: 1.28rem; }
+      .card__example { margin-bottom: 15px; }
+      .footer { padding: 22px 0 26px; }
+      .footer__inner { gap: 10px; }
+      .footer p { order: 3; flex-basis: 100%; }
+      .modal { width: calc(100vw - 24px); max-height: 90dvh; }
+      .modal__body { padding: 20px 18px 22px; }
+      .modal__head { gap: 12px; }
+      .modal__icon { width: 46px; height: 46px; }
+      .modal__icon svg { width: 22px; height: 22px; }
+      .modal__actions .btn { flex: 1 1 100%; }
+    }
+    @media (max-width: 380px) {
+      .topbar__meta .topbar__led { display: none; }
+      .chip { font-size: 10px; }
+      .sort__btn { padding-inline: 7px; }
+      .btn-random { font-size: 10.5px; }
+      .console__hint span { display: none; }
+    }
+
+    /* Respeita quem prefere menos movimento */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      .card, .empty { animation: none !important; }
+      .cartridge { transform: rotate(-2deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sprite de ícones: tudo inline, nada carregado de fora -->
+  <svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
+    <defs>
+      <symbol id="ic-brick" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18v12H3z"/><path d="M3 12h18M9 6v6M15 12v6"/></g></symbol>
+      <symbol id="ic-cfw" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/><path d="M10 10h4v4h-4z"/></g></symbol>
+      <symbol id="ic-overclock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17a8 8 0 1 1 16 0"/><path d="m12 17 4.2-5.2"/><path d="M4 17h2M18 17h2"/><circle cx="12" cy="17" r="1.1" fill="currentColor" stroke="none"/></g></symbol>
+      <symbol id="ic-save-state" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3"/><rect x="8" y="13" width="8" height="5" rx="1"/></g></symbol>
+      <symbol id="ic-homebrew" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6L5.4 18a2 2 0 0 0 1.8 3h9.6a2 2 0 0 0 1.8-3L14 9V3"/><path d="M7.4 15h9.2"/></g></symbol>
+      <symbol id="ic-port" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5v16h4M15 4h4v16h-4"/><path d="M9 12h6M13 9l3 3-3 3"/></g></symbol>
+      <symbol id="ic-grinding" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M6.1 9a7 7 0 0 1 11.7-2.3L20 9M4 15l2.2 2.3A7 7 0 0 0 18 15"/></g></symbol>
+      <symbol id="ic-nerf" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M5 20h14"/></g></symbol>
+      <symbol id="ic-buff" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9"/><path d="m7.5 13.5 4.5-4.5 4.5 4.5"/><path d="M5 4h14"/></g></symbol>
+      <symbol id="ic-lag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10M7 21h10"/><path d="M8 3v3l4 4 4-4V3M8 21v-3l4-4 4 4v3"/></g></symbol>
+      <symbol id="ic-rng" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/></g></symbol>
+      <symbol id="ic-backlog" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="13" height="13" rx="2"/><path d="M8 8V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-3"/></g></symbol>
+      <symbol id="ic-speedrun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5"/><path d="M9 2h6M12 2v3"/></g></symbol>
+      <symbol id="ic-easter-egg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8c4.1 0 7 6.2 7 10.2a7 7 0 0 1-14 0c0-4 2.9-10.2 7-10.2Z"/><path d="m12 10 .9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></g></symbol>
+      <symbol id="ic-dlc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2.8 8 4.4v9.6l-8 4.4-8-4.4V7.2z"/><path d="m4 7.2 8 4.4 8-4.4M12 11.6v9.6"/><path d="M12 6.2v3.4M10.3 7.9h3.4"/></g></symbol>
+      <symbol id="ic-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16.2 16.2 4.6 4.6"/></g></symbol>
+      <symbol id="ic-heart" viewBox="0 0 24 24"><path d="M12 20.1S3.7 15.4 3.7 9.7A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 8.3 2.3c0 5.7-8.3 10.4-8.3 10.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="ic-dice" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></g></symbol>
+      <symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="ic-close" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+      <symbol id="ic-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></g></symbol>
+      <symbol id="ic-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="ic-sparkle" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 13.7 9l5.5 1.7-5.5 1.7L12 18l-1.7-5.6L4.8 10.7 10.3 9z"/><path d="M19 3v3M17.5 4.5h3"/></g></symbol>
+      <symbol id="ic-signal-off" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H4z"/><path d="M9 20h6M12 16v4"/><path d="m2 2 20 20"/></g></symbol>
+      <symbol id="ic-cartridge" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.8h12v18.4H6z"/><path d="M7 2.8v-1h3v1M14 2.8v-1h3v1"/><path d="M9 6h6M9 9h6M9 12h3"/><path d="M9 17h6"/></g></symbol>
+      <symbol id="ic-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></symbol>
+      <symbol id="ic-capacitor" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5h8v9a4 4 0 0 1-8 0z"/><path d="M6 5h12M10 18v3M14 18v3"/></g></symbol>
+      <symbol id="ic-upscale" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/></g></symbol>
+      <symbol id="ic-crt" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M6 8h12M6 11h12M6 14h8"/></g></symbol>
+      <symbol id="ic-sd" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l3 3v15H6z"/><path d="M9 3v5h6V3M9 12h6M9 15h4"/></g></symbol>
+      <symbol id="ic-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></g></symbol>
+      <symbol id="ic-lock-open" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0M12 15v3"/></g></symbol>
+      <symbol id="ic-solder" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 12-12"/><path d="m14 4 6 6-3 3-6-6zM4 20l-1 1M17 3l4 4"/></g></symbol>
+      <symbol id="ic-stick" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="11" rx="2"/><circle cx="8" cy="12.5" r="2.5"/><circle cx="15" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="15" r="1" fill="currentColor" stroke="none"/></g></symbol>
+      <symbol id="ic-thermal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 18h-4z"/><path d="M10 8h4M10 12h4"/></g></symbol>
+      <symbol id="ic-case" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6v6H9z"/><circle cx="12" cy="17" r="1.5"/></g></symbol>
+      <symbol id="ic-rom" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="15" rx="2"/><path d="M9 9h6M9 13h6M9 17h3M8 5V3M12 5V3M16 5V3"/></g></symbol>
+      <symbol id="ic-emulator" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M10 8l5 2.5-5 2.5z"/></g></symbol>
+      <symbol id="ic-layer" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></g></symbol>
+      <symbol id="ic-fast-forward" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 7 6-7 6zM13 6l7 6-7 6z"/></g></symbol>
+      <symbol id="ic-shader" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 8c2-2 4 2 6 0s4 2 4 0M7 12c2-2 4 2 6 0s4 2 4 0M8 21h8M12 18v3"/></g></symbol>
+      <symbol id="ic-netplay" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="12" r="3"/><path d="M9 12h6M5 9 3 7M19 9l2-2M5 15l-2 2M19 15l2 2"/></g></symbol>
+      <symbol id="ic-translate" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h9M7.5 3v2c0 4-2 7-4.5 9M4.5 9c1.2 2 3.4 4 6 5"/><path d="m13 20 3-8 3 8M14.2 17h3.6"/></g></symbol>
+      <symbol id="ic-cheat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 10 2 2-2 2M12 14h5"/></g></symbol>
+      <symbol id="ic-combo" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3-8 11h6l-2 7 10-12h-6z"/></g></symbol>
+      <symbol id="ic-target" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></g></symbol>
+      <symbol id="ic-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></g></symbol>
+      <symbol id="ic-eye" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></g></symbol>
+      <symbol id="ic-footsteps" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4c1.5 0 2 1.5 2 3s-.5 3-2 3-2-1.5-2-3 .5-3 2-3zM15 11c1.5 0 2 1.5 2 3s-.5 3-2 3-2-1.5-2-3 .5-3 2-3z"/><path d="M7 12v3M16 19v3"/></g></symbol>
+      <symbol id="ic-crown" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 4 4 5-7 5 7 4-4v10H3z"/><path d="M3 21h18"/></g></symbol>
+      <symbol id="ic-trophy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 13v5M8 21h8"/></g></symbol>
+      <symbol id="ic-mask" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c3-2 6-2 8 0 2-2 5-2 8 0v6c0 4-3.5 7-8 9-4.5-2-8-5-8-9z"/><path d="M8 11h2M14 11h2M9 15c2 1 4 1 6 0"/></g></symbol>
+      <symbol id="ic-keyboard" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M9 10h.01M12 10h.01M15 10h.01M18 10h.01M7 14h10"/></g></symbol>
+      <symbol id="ic-signal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-4M9 20v-8M14 20V8M19 20V4"/></g></symbol>
+      <symbol id="ic-ngplus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 9a7 7 0 0 1 11.7-2.3L20 9M4 15l2.2 2.3A7 7 0 0 0 18 15"/><path d="M12 9v6M9 12h6"/></g></symbol>
+      <symbol id="ic-star" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.7 5.8 6.3.8-4.6 4.4 1.2 6.2-5.6-3.1-5.6 3.1 1.2-6.2L3 9.6l6.3-.8z"/></g></symbol>
+      <symbol id="ic-factory" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l5 3V9l5 3V6l5 3v12z"/><path d="M3 21h18M7 17h2M12 17h2M17 17h2"/></g></symbol>
+      <symbol id="ic-early" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 12 3h9v9l-9 9z"/><circle cx="17" cy="7" r="1.5"/></g></symbol>
+      <symbol id="ic-lootbox" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16v12H4zM3 8l2-4h14l2 4M12 8v12M9 12h6"/><path d="M10 15a2 2 0 1 1 2.5 1.9V18"/></g></symbol>
+      <symbol id="ic-coin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c-.7-1-2-1.5-3.2-1.5-1.6 0-2.8.8-2.8 2s1.2 1.7 3 2 3 .9 3 2-1.3 2-3 2c-1.3 0-2.5-.5-3.2-1.4"/></g></symbol>
+      <symbol id="ic-ticket" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 0 0 8v3h18v-3a2 2 0 0 0 0-8V5H3z"/><path d="M9 5v14"/></g></symbol>
+      <symbol id="ic-archive" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v11h14V9M10 13h4"/></g></symbol>
+      <symbol id="ic-flame" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 1-3 1-6 1-9Z"/></g></symbol>
+      <symbol id="ic-versus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 5-4v3h4v2H8v3zM21 16l-5 4v-3h-4v-2h4v-3z"/></g></symbol>
+    </defs>
+  </svg>
+
+  <a class="skip-link" href="#conteudo">Pular para o glossário</a>
+  <div class="page-bg" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <a class="brand" href="#" aria-label="Glossário Gamer e Retromodding, voltar ao topo">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 7 7" fill="currentColor" shape-rendering="crispEdges">
+            <path d="M1 0h5v1H1zM0 1h2v1H0zM5 1h2v1H5zM0 2h2v1H0zM0 3h2v1H0zM3 3h4v1H3zM0 4h2v1H0zM5 4h2v1H5zM0 5h2v1H0zM5 5h2v1H5zM1 6h5v1H1z"/>
+          </svg>
+        </span>
+        <span class="brand__text">
+          <strong>Glossário</strong>
+          <span>gamer &amp; retromodding</span>
+        </span>
+      </a>
+      <div class="topbar__meta">
+        <span class="topbar__led" aria-hidden="true"></span>
+        <span>arquivo 001</span>
+        <span class="topbar__sep topbar__hide" aria-hidden="true"></span>
+        <span class="topbar__hide">74 verbetes</span>
+        <span class="topbar__sep" aria-hidden="true"></span>
+        <span>PT-BR</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero wrap" aria-labelledby="titulo-pagina">
+      <div class="hero__grid">
+        <div class="hero__copy">
+          <p class="kicker">
+            <span class="kicker__rule" aria-hidden="true"></span>
+            Arquivo aberto / edição 01
+            <span class="kicker__dot" aria-hidden="true"></span>
+          </p>
+          <h1 id="titulo-pagina">
+            <span class="h1-line">Glossário Gamer</span>
+            <span class="h1-line h1-line--ghost"><span class="h1-amp">&amp;</span> Retromodding</span>
+          </h1>
+          <p class="lede">
+            Dos pinos do cartucho ao último speedrun: <strong>74 verbetes</strong> para entender
+            o vocabulário que conecta hardware, emulação, jogabilidade e a cultura dos jogos.
+          </p>
+        </div>
+
+        <div class="cartridge-wrap" aria-hidden="true">
+          <div class="cartridge">
+            <div class="cartridge__label">
+              <div class="cartridge__meta">
+                <span>GG–001</span>
+                <span>PT-BR</span>
+              </div>
+              <svg class="cartridge__glyph" viewBox="0 0 7 7" fill="currentColor" shape-rendering="crispEdges">
+                <path d="M1 0h5v1H1zM0 1h2v1H0zM5 1h2v1H5zM0 2h2v1H0zM0 3h2v1H0zM3 3h4v1H3zM0 4h2v1H0zM5 4h2v1H5zM0 5h2v1H0zM5 5h2v1H5zM1 6h5v1H1z"/>
+              </svg>
+              <p class="cartridge__name">
+                Glossário Gamer
+                <span>&amp; retromodding</span>
+              </p>
+              <div class="cartridge__foot">
+                <span>74 verbetes</span>
+                <span class="cartridge__foot-dot"></span>
+              </div>
+            </div>
+            <div class="cartridge__pins">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="console">
+        <div class="console__bar" aria-hidden="true">
+          <span class="console__led"></span>
+          <span>consulta</span>
+          <span class="console__hint"><kbd>/</kbd><span>foca a busca</span></span>
+        </div>
+        <div class="console__screen">
+          <svg class="console__search-icon" aria-hidden="true" focusable="false"><use href="#ic-search"></use></svg>
+          <label class="sr-only" for="busca">Pesquisar termo no glossário</label>
+          <input
+            id="busca"
+            type="search"
+            placeholder="Pesquise um termo..."
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            aria-describedby="dica-busca"
+          >
+          <kbd class="console__kbd" aria-hidden="true">/</kbd>
+          <span class="console__counter" role="status" aria-live="polite" aria-atomic="true" id="contador">
+            <strong>74</strong><span>termos</span>
+          </span>
+        </div>
+        <span class="sr-only" id="dica-busca">Use a barra (/) em qualquer lugar da página para focar a busca. O contador mostra quantos termos estão visíveis.</span>
+      </div>
+    </section>
+
+    <section class="toolbar" aria-label="Filtros e ordenação do glossário">
+      <div class="wrap toolbar__inner">
+        <div class="filters" id="filtros" role="group" aria-label="Filtrar termos por categoria"></div>
+        <div class="toolbar__actions">
+          <div class="sort" role="group" aria-label="Ordenar termos">
+            <button class="sort__btn is-active" type="button" data-sort="padrao" aria-pressed="true">Padrão</button>
+            <button class="sort__btn" type="button" data-sort="az" aria-pressed="false">A–Z</button>
+          </div>
+          <button class="btn-random" id="aleatorio" type="button">
+            <svg aria-hidden="true" focusable="false"><use href="#ic-dice"></use></svg>
+            Termo aleatório
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="results wrap" aria-labelledby="titulo-resultados">
+      <h2 class="sr-only" id="titulo-resultados">Termos do glossário</h2>
+      <div class="grid" id="grid"></div>
+
+      <div class="empty" id="vazio" hidden>
+        <div class="empty__screen" aria-hidden="true">
+          <svg><use href="#ic-signal-off"></use></svg>
+          <span class="empty__signal">sem sinal</span>
+        </div>
+        <h3 id="vazio-titulo">Nenhum termo encontrado</h3>
+        <p id="vazio-texto">Ajuste a busca ou limpe os filtros para ver o arquivo completo.</p>
+        <button class="btn btn--ghost" id="limpar" type="button">Limpar busca e filtros</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <span class="footer__brand" aria-hidden="true">
+        <svg viewBox="0 0 7 7" fill="currentColor" shape-rendering="crispEdges">
+          <path d="M1 0h5v1H1zM0 1h2v1H0zM5 1h2v1H5zM0 2h2v1H0zM0 3h2v1H0zM3 3h4v1H3zM0 4h2v1H0zM5 4h2v1H5zM0 5h2v1H0zM5 5h2v1H5zM1 6h5v1H1z"/>
+        </svg>
+        GG–001
+      </span>
+      <p>Criado por kaio</p>
+      <a class="footer__link" href="https://kaioviniciusp.github.io/apresentacao-glossario-gg-001/">Ver apresentação <span aria-hidden="true">↗</span></a>
+      <span class="footer__meta">74 termos / edição 01</span>
+    </div>
+  </footer>
+
+  <dialog class="modal" id="modal" aria-labelledby="modal-titulo" aria-describedby="modal-def"></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    'use strict';
+
+    /* =========================================================
+       DADOS · cada verbete tem ficha completa e um ícone próprio
+       ========================================================= */
+    const CATEGORIAS = {
+      hardware:     { nome: 'Hardware/Mod',    codigo: 'HW', cor: '#0032a8', viva: '#0042d6' },
+      jogabilidade: { nome: 'Jogabilidade',    codigo: 'JB', cor: '#c21b5a', viva: '#fc3b7f' },
+      emulacao:     { nome: 'Emulação',        codigo: 'EM', cor: '#01722f', viva: '#01a347' },
+      cultura:      { nome: 'Cultura & Mercado', codigo: 'CT', cor: '#c41204', viva: '#f4260f' }
+    };
+
+    const TERMOS = [
+      {
+        id: 'brick',
+        termo: 'Brick',
+        categoria: 'hardware',
+        icone: 'ic-brick',
+        definicao: 'Estado em que um aparelho deixa de inicializar e passa a responder muito pouco ou nada. Costuma acontecer depois de uma modificação ou atualização malsucedida.',
+        exemplo: 'Tentei instalar um firmware errado e o console virou um brick na hora.',
+        curiosidade: 'O nome vem da ideia de transformar o aparelho em um “tijolo” inútil — recuperável apenas com ferramentas específicas.'
+      },
+      {
+        id: 'save-state',
+        termo: 'Save State',
+        categoria: 'emulacao',
+        icone: 'ic-save-state',
+        definicao: 'Recurso de emuladores que congela a memória do jogo em um instante e permite retomá-lo exatamente dali. É diferente do save interno, que depende do próprio jogo.',
+        exemplo: 'Salvei o estado antes do chefe final e testei cinco estratégias sem repetir a fase inteira.',
+        curiosidade: 'Speedrunners usam save states para estudar rotas, mas normalmente eles são proibidos nas corridas oficiais.'
+      },
+      {
+        id: 'grinding',
+        termo: 'Grinding',
+        categoria: 'jogabilidade',
+        icone: 'ic-grinding',
+        definicao: 'Ação de repetir tarefas ou batalhas para acumular experiência, itens ou dinheiro dentro de um jogo. É um ritmo lento planejado pelo design, não necessariamente um erro.',
+        exemplo: 'Passei duas horas em grinding na mesma área para chegar ao nível 40 antes do chefe.',
+        curiosidade: 'Em RPGs antigos, o grinding compensava a ausência de ajuste automático de dificuldade.'
+      },
+      {
+        id: 'backlog',
+        termo: 'Backlog',
+        categoria: 'cultura',
+        icone: 'ic-backlog',
+        definicao: 'Lista de jogos comprados ou iniciados que ainda esperam ser terminados. Cresce mais rápido do que qualquer promoção consegue justificar.',
+        exemplo: 'Comprei mais cinco jogos na sale e só aumentei meu backlog para 42 títulos.',
+        curiosidade: 'O conceito virou métrica de colecionador: há quem organize o backlog por ano de lançamento.'
+      },
+      {
+        id: 'cfw',
+        termo: 'CFW',
+        expansao: 'Custom Firmware',
+        categoria: 'hardware',
+        icone: 'ic-cfw',
+        definicao: 'Firmware modificado que amplia os recursos de um console, como instalar homebrews ou rodar jogos de outras regiões. A instalação exige atenção à versão exata do aparelho.',
+        exemplo: 'Depois de instalar o CFW, consegui rodar meus backups e um player de música no portátil.',
+        curiosidade: 'Nem todo console aceita CFW: alguns exigem um chip físico ou uma falha específica de hardware.'
+      },
+      {
+        id: 'homebrew',
+        termo: 'Homebrew',
+        categoria: 'emulacao',
+        icone: 'ic-homebrew',
+        definicao: 'Software não oficial criado por comunidades para consoles e computadores, de jogos completos a utilitários. Costuma circular de graça e depender de CFW ou exploits para rodar.',
+        exemplo: 'Baixei um homebrew de xadrez para o meu portátil antigo e ele virou meu passatempo de viagem.',
+        curiosidade: 'Alguns homebrews chegam a ser lançados em cartucho físico, com caixa e manual impressos.'
+      },
+      {
+        id: 'nerf',
+        termo: 'Nerf',
+        categoria: 'jogabilidade',
+        icone: 'ic-nerf',
+        definicao: 'Redução intencional da força de algo no jogo, como uma habilidade, arma ou personagem. Costuma vir em patches para equilibrar o competitivo.',
+        exemplo: 'O nerf naquela pistola foi tão forte que ela sumiu das partidas ranqueadas.',
+        curiosidade: 'Nerf era o nome de uma marca de armas de brinquedo; a comunidade adotou o verbo para dizer “enfraquecer”.'
+      },
+      {
+        id: 'speedrun',
+        termo: 'Speedrun',
+        categoria: 'cultura',
+        icone: 'ic-speedrun',
+        definicao: 'Prática de terminar um jogo no menor tempo possível, seguindo categorias e regras definidas pela comunidade. Exige domínio de rotas, bugs permitidos e execução precisa.',
+        exemplo: 'Assisti a um speedrun de 19 minutos e descobri atalhos que nunca teria encontrado sozinho.',
+        curiosidade: 'Recordes são verificados por vídeo e, muitas vezes, analisados quadro a quadro.'
+      },
+      {
+        id: 'overclock',
+        termo: 'Overclock',
+        categoria: 'hardware',
+        icone: 'ic-overclock',
+        definicao: 'Aumento da frequência de operação de um componente para obter mais desempenho do que o previsto de fábrica. Ganha-se velocidade, mas também calor e consumo.',
+        exemplo: 'Subi o overclock da GPU e ganhei 10 fps, mas as ventoinhas passaram a trabalhar sem parar.',
+        curiosidade: 'Nos anos 1990, overclockar um 486 era quase um rito de passagem entre entusiastas de PC.'
+      },
+      {
+        id: 'port',
+        termo: 'Port',
+        categoria: 'emulacao',
+        icone: 'ic-port',
+        definicao: 'Versão de um jogo ou programa adaptada para outra plataforma, muitas vezes com cortes ou ajustes técnicos. Um bom port preserva a essência mesmo quando o hardware é bem diferente.',
+        exemplo: 'O port de PC rodou liso, mas perdeu os efeitos de vibração do controle original.',
+        curiosidade: 'O termo vem de “portar” o código: transportar um jogo de uma máquina para outra.'
+      },
+      {
+        id: 'buff',
+        termo: 'Buff',
+        categoria: 'jogabilidade',
+        icone: 'ic-buff',
+        definicao: 'Aumento intencional de poder, velocidade ou utilidade de algo no jogo. Pode ser um ajuste de balanceamento ou um efeito temporário aplicado ao personagem.',
+        exemplo: 'Depois do buff, o escudo passou a aguentar três golpes em vez de um.',
+        curiosidade: 'Buff e nerf costumam andar juntos: todo patch de equilíbrio mexe nos dois lados.'
+      },
+      {
+        id: 'easter-egg',
+        termo: 'Easter Egg',
+        categoria: 'cultura',
+        icone: 'ic-easter-egg',
+        definicao: 'Mensagem, cena ou referência escondida propositalmente pelos desenvolvedores. Costuma exigir uma sequência incomum de ações para aparecer.',
+        exemplo: 'Depois de apertar o botão 50 vezes, apareceu um crédito secreto com o nome da equipe.',
+        curiosidade: 'O termo nasceu de um easter egg escondido no jogo Adventure, do Atari 2600, em 1980.'
+      },
+      {
+        id: 'lag',
+        termo: 'Lag',
+        categoria: 'jogabilidade',
+        icone: 'ic-lag',
+        definicao: 'Atraso entre uma ação e a resposta do jogo, causado por latência de rede, processamento ou renderização. Em jogos competitivos, até poucos milissegundos mudam o resultado.',
+        exemplo: 'Meu personagem voltou para o lugar anterior: era lag, não falta de habilidade.',
+        curiosidade: 'O lag de rede é diferente do “input lag”, o atraso entre o controle e a imagem na tela.'
+      },
+      {
+        id: 'rng',
+        termo: 'RNG',
+        expansao: 'Random Number Generator',
+        categoria: 'jogabilidade',
+        icone: 'ic-rng',
+        definicao: 'Sistema que produz resultados aleatórios, de drops a acertos críticos. Em jogos, quase sempre é uma aleatoriedade controlada por sementes e probabilidades.',
+        exemplo: 'Abri 30 caixas e não veio o item raro: o RNG simplesmente não estava a meu favor.',
+        curiosidade: 'Muitos jogos usam “RNG com pity”: a chance aumenta a cada tentativa sem sucesso.'
+      },
+      {
+        id: 'dlc',
+        termo: 'DLC',
+        expansao: 'Downloadable Content',
+        categoria: 'cultura',
+        icone: 'ic-dlc',
+        definicao: 'Conteúdo adicional distribuído depois do lançamento, que pode trazer fases, personagens, cosméticos ou expansões. Nem todo DLC é essencial: parte é cosmética e parte amplia a experiência.',
+        exemplo: 'A expansão em DLC custava quase o preço do jogo base, mas adicionava uma campanha inteira.',
+        curiosidade: 'O modelo se popularizou no Xbox 360, quando baixar conteúdo extra virou rotina.'
+      },
+      {
+        id: 'modchip',
+        termo: 'Modchip',
+        categoria: 'hardware',
+        icone: 'ic-cfw',
+        definicao: 'Chip instalado no console para contornar bloqueios de região, verificação de cópia ou assinatura de firmware. Exige solda e conhecimento do modelo exato da placa.',
+        exemplo: 'O modchip foi soldado na placa e liberou o console para rodar backups.',
+        curiosidade: 'Alguns modchips modernos usam microcontroladores reprogramáveis para imitar o comportamento do sistema original.'
+      },
+      {
+        id: 'retrobright',
+        termo: 'Retrobright',
+        categoria: 'hardware',
+        icone: 'ic-sun',
+        definicao: 'Técnica caseira para clarear plásticos ABS amarelados de consoles antigos usando peróxido e luz ultravioleta. O resultado depende do plástico e pode voltar a amarelar com o tempo.',
+        exemplo: 'Deixei a carcaça do Super Nintendo no retrobright por seis horas e ela voltou a ficar cinza.',
+        curiosidade: 'O amarelamento é causado pela degradação do bromo presente no plástico, não apenas pela sujeira.'
+      },
+      {
+        id: 'recap',
+        termo: 'Recap',
+        categoria: 'hardware',
+        icone: 'ic-capacitor',
+        definicao: 'Troca dos capacitores eletrolíticos de uma placa por unidades novas, geralmente para corrigir falhas de energia e instabilidade. É uma manutenção comum em aparelhos com décadas de uso.',
+        exemplo: 'Depois do recap, o áudio do portátil parou de estalar e a tela ficou estável.',
+        curiosidade: 'Capacitores antigos podem vazar e danificar a placa; por isso o recap é feito antes que o problema apareça.'
+      },
+      {
+        id: 'fpga',
+        termo: 'FPGA',
+        categoria: 'hardware',
+        icone: 'ic-cfw',
+        definicao: 'Chip reprogramável que permite recriar o funcionamento de um hardware antigo em nível de circuito, sem emular por software. É usado em consoles e placas voltadas à preservação.',
+        exemplo: 'O FPGA recriou o timing do console original com tanta precisão que os controles responderam igual.',
+        curiosidade: 'Projetos de FPGA são escritos em linguagens de descrição de hardware, como Verilog e VHDL.'
+      },
+      {
+        id: 'upscaler',
+        termo: 'Upscaler',
+        categoria: 'hardware',
+        icone: 'ic-upscale',
+        definicao: 'Dispositivo ou software que aumenta a resolução de um sinal de vídeo, como 240p para 1080p. Pode preservar a nitidez dos pixels ou adicionar filtros que suavizam a imagem.',
+        exemplo: 'Liguei o upscaler entre o console e a TV e as bordas dos sprites ficaram limpas.',
+        curiosidade: 'Upscalers de linha dobram as linhas da imagem, enquanto scalers modernos fazem escalonamento por inteiro.'
+      },
+      {
+        id: 'crt',
+        termo: 'CRT',
+        categoria: 'hardware',
+        icone: 'ic-crt',
+        definicao: 'Tubo de raios catódicos usado em televisões e monitores antigos, conhecido pelo contraste e pelo brilho das linhas de varredura. Para muitos jogos de 240p, é o display para o qual a arte foi desenhada.',
+        exemplo: 'Na TV de tubo, os sprites do Mega Drive pareciam se fundir sem os serrilhados do monitor moderno.',
+        curiosidade: 'Monitores CRT de arcade podem ser girados fisicamente para jogos em orientação vertical.'
+      },
+      {
+        id: 'cartucho',
+        termo: 'Cartucho',
+        categoria: 'hardware',
+        icone: 'ic-cartridge',
+        definicao: 'Mídia removível que guarda o jogo em chips de memória e conecta-se ao console por contatos dourados. Diferente de um disco, não possui partes móveis e costuma carregar o jogo quase instantaneamente.',
+        exemplo: 'Assoprei o cartucho por hábito, mas o problema era mesmo o conector sujo.',
+        curiosidade: 'O sopro no cartucho pode oxidar os contatos; o correto é limpar com álcool isopropílico.'
+      },
+      {
+        id: 'flashcart',
+        termo: 'Flashcart',
+        categoria: 'hardware',
+        icone: 'ic-sd',
+        definicao: 'Cartucho com memória flash que permite carregar ROMs e homebrews em um console original. Funciona como uma biblioteca portátil, mas depende da compatibilidade com o modelo.',
+        exemplo: 'Coloquei o flashcart no portátil e levei 50 jogos para a viagem.',
+        curiosidade: 'Alguns flashcarts incluem chip de save e relógio em tempo real para jogos que dependem da hora.'
+      },
+      {
+        id: 'region-lock',
+        termo: 'Region Lock',
+        categoria: 'hardware',
+        icone: 'ic-globe',
+        definicao: 'Bloqueio que impede jogos de uma região de rodarem em consoles de outra. Pode ser contornado por modchip, CFW ou adaptadores, dependendo do aparelho.',
+        exemplo: 'O RPG japonês não abriu no meu console americano por causa do region lock.',
+        curiosidade: 'O Mega Drive tinha trava regional por forma do cartucho e verificação de código, não apenas por software.'
+      },
+      {
+        id: 'jailbreak',
+        termo: 'Jailbreak',
+        categoria: 'hardware',
+        icone: 'ic-lock-open',
+        definicao: 'Processo de remover as restrições de software de um aparelho para permitir instalação de aplicativos e conteúdo não oficiais. Em consoles, costuma abrir caminho para homebrews e emuladores.',
+        exemplo: 'Fiz o jailbreak do portátil para instalar um leitor de quadrinhos e um emulador de fliperama.',
+        curiosidade: 'O termo vem do mundo dos smartphones e foi adotado pelos consoles quando os sistemas ficaram mais fechados.'
+      },
+      {
+        id: 'solda',
+        termo: 'Solda',
+        categoria: 'hardware',
+        icone: 'ic-solder',
+        definicao: 'Técnica de unir componentes eletrônicos com uma liga metálica derretida. No retromodding, é usada em modchips, recaps e reparos de conectores.',
+        exemplo: 'A solda fria no conector de energia fazia o console desligar quando alguém encostava no cabo.',
+        curiosidade: 'Solda fria não é falta de calor: é uma junção mal formada que parece presa, mas não conduz bem.'
+      },
+      {
+        id: 'arcade-stick',
+        termo: 'Arcade Stick',
+        categoria: 'hardware',
+        icone: 'ic-stick',
+        definicao: 'Controle em formato de painel de fliperama, com alavanca e botões maiores. É preferido em jogos de luta por oferecer comandos precisos e componentes substituíveis.',
+        exemplo: 'Troquei o manche do arcade stick por um modelo sanwa e os comandos ficaram mais consistentes.',
+        curiosidade: 'Muitos sticks usam microswitches, o mesmo tipo de componente que faz o clique dos botões de fliperama.'
+      },
+      {
+        id: 'pasta-termica',
+        termo: 'Pasta Térmica',
+        categoria: 'hardware',
+        icone: 'ic-thermal',
+        definicao: 'Material aplicado entre o processador e o dissipador para melhorar a condução de calor. Em consoles antigos, ressecada, pode causar superaquecimento e ruído excessivo.',
+        exemplo: 'Troquei a pasta térmica do PS3 e a ventoinha parou de acelerar em menus.',
+        curiosidade: 'Pasta térmica não é cola: ela apenas preenche microimperfeições entre as superfícies.'
+      },
+      {
+        id: 'case-mod',
+        termo: 'Case Mod',
+        categoria: 'hardware',
+        icone: 'ic-case',
+        definicao: 'Modificação visual ou estrutural da carcaça de um console ou PC, como pintura, corte de janela ou troca de LEDs. Pode ser só estética ou melhorar ventilação e acesso a componentes.',
+        exemplo: 'Fiz um case mod com janela lateral e LED verde para mostrar a placa do meu PC.',
+        curiosidade: 'Case mods competitivos são julgados por acabamento, criatividade e integração com o hardware.'
+      },
+      {
+        id: 'rom',
+        termo: 'ROM',
+        expansao: 'Read-Only Memory',
+        categoria: 'emulacao',
+        icone: 'ic-rom',
+        definicao: 'Arquivo que contém os dados de um jogo, extraído de um cartucho ou de outra mídia. É o formato que emuladores carregam para executar o software.',
+        exemplo: 'Baixei a ROM do meu jogo favorito e abri no emulador do notebook.',
+        curiosidade: 'A extensão .rom é genérica; cada console costuma ter formatos próprios, como .nes, .sfc ou .gba.'
+      },
+      {
+        id: 'bios',
+        termo: 'BIOS',
+        expansao: 'Basic Input/Output System',
+        categoria: 'emulacao',
+        icone: 'ic-cfw',
+        definicao: 'Conjunto de instruções básicas que inicializa o hardware e fornece rotinas usadas pelos jogos. Em emuladores, às vezes precisa ser obtido do próprio console para funcionar.',
+        exemplo: 'O emulador não abria o jogo porque faltava o arquivo de BIOS na pasta do sistema.',
+        curiosidade: 'A BIOS é protegida por direitos autorais; por isso muitos emuladores não a distribuem.'
+      },
+      {
+        id: 'emulador',
+        termo: 'Emulador',
+        categoria: 'emulacao',
+        icone: 'ic-emulator',
+        definicao: 'Programa que reproduz o comportamento de um console ou computador antigo em outro hardware. Pode priorizar precisão, desempenho ou recursos extras como save states.',
+        exemplo: 'O emulador rodou o jogo em 4K, mas o áudio ficou atrasado alguns quadros.',
+        curiosidade: 'Emuladores de ciclo exato tentam sincronizar cada instrução do processador original.'
+      },
+      {
+        id: 'core',
+        termo: 'Core',
+        categoria: 'emulacao',
+        icone: 'ic-layer',
+        definicao: 'Módulo de emulação responsável por simular um sistema específico dentro de um frontend. Permite trocar de console sem instalar outro aplicativo completo.',
+        exemplo: 'Troquei o core de SNES para um mais preciso e o modo 7 parou de tremer.',
+        curiosidade: 'No RetroArch, cada console é um core separado, com opções e compatibilidade próprias.'
+      },
+      {
+        id: 'frame-skip',
+        termo: 'Frame Skip',
+        categoria: 'emulacao',
+        icone: 'ic-fast-forward',
+        definicao: 'Recurso que pula quadros para manter a velocidade do jogo quando o hardware não consegue renderizar tudo. Deixa a animação menos fluida, mas evita que o jogo fique em câmera lenta.',
+        exemplo: 'Ativei o frame skip no emulador e o jogo voltou à velocidade normal, com pequenos engasgos.',
+        curiosidade: 'Emuladores antigos usavam frame skip automático como padrão para rodar em PCs modestos.'
+      },
+      {
+        id: 'fast-forward',
+        termo: 'Fast Forward',
+        categoria: 'emulacao',
+        icone: 'ic-fast-forward',
+        definicao: 'Recurso que acelera temporariamente a execução do jogo, útil para atravessar trechos repetitivos ou testar rotas. Não altera o save, apenas a velocidade do emulador.',
+        exemplo: 'Segurei o fast forward durante o grinding e economizei vinte minutos.',
+        curiosidade: 'Alguns emuladores permitem definir a velocidade do fast forward, de 2x a 10x.'
+      },
+      {
+        id: 'shader-crt',
+        termo: 'Shader CRT',
+        categoria: 'emulacao',
+        icone: 'ic-shader',
+        definicao: 'Filtro gráfico que imita características de uma TV de tubo, como scanlines, máscara de fósforo e curvatura. Ajuda a suavizar pixels e recuperar a aparência original dos jogos.',
+        exemplo: 'Ativei o shader CRT e as cores do fliperama ficaram mais próximas da lembrança.',
+        curiosidade: 'Shaders modernos podem simular até o brilho do fósforo e o desalinhamento das máscaras.'
+      },
+      {
+        id: 'netplay',
+        termo: 'Netplay',
+        categoria: 'emulacao',
+        icone: 'ic-netplay',
+        definicao: 'Modo que permite jogar com outras pessoas por rede usando um emulador. Pode sincronizar entradas ou estados para manter os jogadores no mesmo ponto da partida.',
+        exemplo: 'Marcamos uma noite de netplay para terminar o co-op que nunca tínhamos zerado.',
+        curiosidade: 'Netplay por rollback esconde a latência curta recalculando estados em vez de esperar o outro jogador.'
+      },
+      {
+        id: 'frontend',
+        termo: 'Frontend',
+        categoria: 'emulacao',
+        icone: 'ic-layer',
+        definicao: 'Interface que organiza ROMs, cores, capas e configurações de emulação em uma única biblioteca. Não emula nada sozinho: apenas facilita a navegação e o lançamento dos jogos.',
+        exemplo: 'Configurei o frontend com capas e vídeos e a biblioteca ficou com cara de console.',
+        curiosidade: 'Frontends populares importam metadados de bancos públicos para baixar capas automaticamente.'
+      },
+      {
+        id: 'translation-patch',
+        termo: 'Translation Patch',
+        categoria: 'emulacao',
+        icone: 'ic-translate',
+        definicao: 'Modificação que traduz textos, menus e às vezes gráficos de um jogo para outro idioma. Costuma ser aplicada sobre a ROM original e distribuída pela comunidade.',
+        exemplo: 'Instalei a translation patch e finalmente entendi a história do RPG japonês.',
+        curiosidade: 'Traduções de jogos com fonte fixa exigem redesenhar caracteres, não apenas trocar o texto.'
+      },
+      {
+        id: 'ips-patch',
+        termo: 'IPS Patch',
+        expansao: 'International Patching System',
+        categoria: 'emulacao',
+        icone: 'ic-rom',
+        definicao: 'Arquivo que guarda apenas as diferenças entre uma ROM original e uma versão modificada. É aplicado por ferramentas de patch para evitar distribuir o jogo inteiro.',
+        exemplo: 'Apliquei o IPS patch na ROM limpa e o hack de dificuldade funcionou de primeira.',
+        curiosidade: 'O formato IPS tem limitações de tamanho; hacks maiores costumam usar BPS ou xdelta.'
+      },
+      {
+        id: 'hardware-emulation',
+        termo: 'Hardware Emulation',
+        categoria: 'emulacao',
+        icone: 'ic-emulator',
+        definicao: 'Recriação de um console antigo por meio de componentes físicos reprogramáveis, em vez de software. Busca timings e comportamentos mais próximos do original.',
+        exemplo: 'A emulação por hardware do Mega Drive rodou o cartucho original sem qualquer patch.',
+        curiosidade: 'FPGAs são a base de muitos projetos de emulação por hardware, mas não são a única abordagem.'
+      },
+      {
+        id: 'rom-hack',
+        termo: 'ROM Hack',
+        categoria: 'emulacao',
+        icone: 'ic-homebrew',
+        definicao: 'Versão modificada de um jogo, com mudanças de dificuldade, gráficos, personagens ou conteúdo. Pode ser um ajuste pequeno ou uma campanha completamente nova.',
+        exemplo: 'Baixei um ROM hack que transformava o jogo em cooperativo para dois jogadores.',
+        curiosidade: 'Hacks de kaizo ficaram famosos por níveis extremamente difíceis e exigem execução precisa.'
+      },
+      {
+        id: 'cheat-code',
+        termo: 'Cheat Code',
+        categoria: 'emulacao',
+        icone: 'ic-cheat',
+        definicao: 'Sequência de comandos ou códigos que altera o comportamento do jogo, como vidas infinitas ou itens raros. Pode ser digitada no próprio jogo ou aplicada por dispositivos externos.',
+        exemplo: 'Digitei o cheat code de vidas infinitas e consegui terminar a fase final.',
+        curiosidade: 'O Game Genie alterava a memória do cartucho em tempo real, sem modificar a ROM.'
+      },
+      {
+        id: 'combo',
+        termo: 'Combo',
+        categoria: 'jogabilidade',
+        icone: 'ic-combo',
+        definicao: 'Sequência encadeada de golpes ou ações que só funciona se cada entrada for executada no tempo certo. Quanto maior o combo, maior o dano ou a recompensa.',
+        exemplo: 'Treinei o combo de três golpes até acertar sem olhar para o controle.',
+        curiosidade: 'Jogos de luta medem combos em frames; um erro de dois frames pode quebrar a sequência.'
+      },
+      {
+        id: 'hitbox',
+        termo: 'Hitbox',
+        categoria: 'jogabilidade',
+        icone: 'ic-target',
+        definicao: 'Área invisível usada pelo jogo para detectar colisões entre personagens, golpes e cenário. Nem sempre coincide com o desenho visível do objeto.',
+        exemplo: 'O golpe passou longe do sprite, mas acertou porque a hitbox era maior que a espada.',
+        curiosidade: 'Jogos de luta às vezes mostram hitboxes em modo de treino para estudar alcance.'
+      },
+      {
+        id: 'iframes',
+        termo: 'I-frames',
+        categoria: 'jogabilidade',
+        icone: 'ic-shield',
+        definicao: 'Período em que o personagem fica invulnerável após levar dano, esquivar ou executar uma ação especial. Serve para evitar dano em cadeia e dar ritmo à defesa.',
+        exemplo: 'Rolei no momento certo e usei os i-frames para atravessar o ataque do chefe.',
+        curiosidade: 'Em speedruns, i-frames permitem atravessar áreas perigosas sem perder tempo.'
+      },
+      {
+        id: 'parry',
+        termo: 'Parry',
+        categoria: 'jogabilidade',
+        icone: 'ic-shield',
+        definicao: 'Defesa ativa que exige apertar o botão no instante do ataque inimigo para bloquear ou refletir o golpe. Recompensa leitura e timing com uma abertura para contra-atacar.',
+        exemplo: 'Acertei o parry no último frame e o chefe ficou atordoado por três segundos.',
+        curiosidade: 'Jogos como Sekiro transformam o parry em mecânica central, não em opção defensiva.'
+      },
+      {
+        id: 'aggro',
+        termo: 'Aggro',
+        categoria: 'jogabilidade',
+        icone: 'ic-eye',
+        definicao: 'Nível de ameaça que determina qual jogador ou personagem o inimigo vai atacar. Tanques costumam gerar aggro para proteger o grupo.',
+        exemplo: 'O tanque puxou o aggro do chefe enquanto os DPS atacavam pelas costas.',
+        curiosidade: 'Em MMOs, skills de taunt forçam o inimigo a mirar no tanque por um tempo.'
+      },
+      {
+        id: 'kiting',
+        termo: 'Kiting',
+        categoria: 'jogabilidade',
+        icone: 'ic-footsteps',
+        definicao: 'Técnica de atacar um inimigo enquanto se afasta dele, mantendo distância para não ser alcançado. É comum em classes à distância e em jogos com inimigos corpo a corpo.',
+        exemplo: 'Fiz kiting no corredor até o arqueiro cair sem encostar em mim.',
+        curiosidade: 'O nome vem de “pipa”: o jogador mantém o inimigo preso a uma linha imaginária.'
+      },
+      {
+        id: 'tank',
+        termo: 'Tank',
+        categoria: 'jogabilidade',
+        icone: 'ic-shield',
+        definicao: 'Função de personagem que absorve dano e protege o grupo, geralmente com defesa alta e provocação. Não costuma causar muito dano, mas controla o ritmo da luta.',
+        exemplo: 'Entrei de tank na raid e segurei o chefe enquanto o grupo curava e atacava.',
+        curiosidade: 'A tríade tank, healer e DPS vem dos primeiros MMOs e organiza quase todo jogo cooperativo.'
+      },
+      {
+        id: 'dps',
+        termo: 'DPS',
+        expansao: 'Damage Per Second',
+        categoria: 'jogabilidade',
+        icone: 'ic-buff',
+        definicao: 'Dano por segundo: medida de quanto dano um personagem ou arma causa em um intervalo de tempo. Também designa a função de quem foca em causar dano no grupo.',
+        exemplo: 'Troquei a arma e meu DPS subiu 30% na mesma fase.',
+        curiosidade: 'Builds de DPS podem priorizar dano explosivo ou dano sustentado, dependendo do chefe.'
+      },
+      {
+        id: 'meta',
+        termo: 'Meta',
+        categoria: 'jogabilidade',
+        icone: 'ic-crown',
+        definicao: 'Conjunto de estratégias, personagens e itens considerados mais eficientes no momento. Muda com patches e com a adaptação da comunidade competitiva.',
+        exemplo: 'O meta do patch favorecia times rápidos, então troquei meu personagem principal.',
+        curiosidade: 'Meta vem de metagame, a camada estratégica que existe acima das regras básicas de um jogo.'
+      },
+      {
+        id: 'clutch',
+        termo: 'Clutch',
+        categoria: 'jogabilidade',
+        icone: 'ic-trophy',
+        definicao: 'Jogada decisiva feita sob pressão, geralmente quando o time está perdendo ou resta pouco tempo. Pode virar uma partida inteira com uma única ação certeira.',
+        exemplo: 'O jogador fez um clutch de 1 contra 3 e garantiu a classificação.',
+        curiosidade: 'Clutch não é sorte: costuma envolver leitura do adversário e controle emocional.'
+      },
+      {
+        id: 'gank',
+        termo: 'Gank',
+        categoria: 'jogabilidade',
+        icone: 'ic-target',
+        definicao: 'Ataque coordenado de dois ou mais jogadores contra um alvo isolado, geralmente vindo de uma rota inesperada. É uma estratégia comum em MOBAs e jogos de equipe.',
+        exemplo: 'Levei um gank no rio porque ninguém avisou que o inimigo tinha sumido.',
+        curiosidade: 'Gank é abreviação de “gang kill”, popularizada em DotA.'
+      },
+      {
+        id: 'smurf',
+        termo: 'Smurf',
+        categoria: 'jogabilidade',
+        icone: 'ic-mask',
+        definicao: 'Conta secundária usada por um jogador experiente para enfrentar pessoas de nível inferior. É considerada antidesportiva em jogos competitivos e pode resultar em banimento.',
+        exemplo: 'O adversário parecia novato, mas era um smurf com centenas de horas.',
+        curiosidade: 'O nome vem dos personagens azuis de Smurfs, pequenos e aparentemente inofensivos.'
+      },
+      {
+        id: 'afk',
+        termo: 'AFK',
+        expansao: 'Away From Keyboard',
+        categoria: 'jogabilidade',
+        icone: 'ic-keyboard',
+        definicao: 'Estado de um jogador que está longe do controle ou da tela. Em partidas online, pode prejudicar o time e gerar punições.',
+        exemplo: 'Fiquei AFK para atender a porta e o time perdeu a rodada.',
+        curiosidade: 'Muitos jogos detectam AFK e expulsam o jogador após alguns minutos sem ação.'
+      },
+      {
+        id: 'ping',
+        termo: 'Ping',
+        categoria: 'jogabilidade',
+        icone: 'ic-signal',
+        definicao: 'Tempo de ida e volta de um pacote de dados entre o jogador e o servidor, medido em milissegundos. Quanto menor, mais rápida tende a ser a resposta do jogo online.',
+        exemplo: 'Meu ping subiu para 180 ms e os comandos passaram a chegar atrasados.',
+        curiosidade: 'Ping alto não é a mesma coisa que perda de pacotes, embora os dois possam causar lag.'
+      },
+      {
+        id: 'matchmaking',
+        termo: 'Matchmaking',
+        categoria: 'jogabilidade',
+        icone: 'ic-netplay',
+        definicao: 'Sistema que organiza jogadores em partidas com base em habilidade, latência ou tempo de espera. Um bom matchmaking equilibra partidas sem fazer o jogador esperar demais.',
+        exemplo: 'O matchmaking demorou, mas colocou nosso time contra adversários do mesmo nível.',
+        curiosidade: 'Sistemas modernos usam MMR oculto para estimar a habilidade de cada conta.'
+      },
+      {
+        id: 'new-game-plus',
+        termo: 'New Game+',
+        categoria: 'jogabilidade',
+        icone: 'ic-ngplus',
+        definicao: 'Modo que reinicia a campanha mantendo parte do progresso, como níveis, itens ou habilidades. Costuma aumentar a dificuldade e revelar conteúdo extra.',
+        exemplo: 'Comecei o New Game+ com todas as armas e enfrentei o primeiro chefe em um golpe.',
+        curiosidade: 'O conceito ficou popular com Chrono Trigger, que chamava o recurso de New Game+.'
+      },
+      {
+        id: 'indie',
+        termo: 'Indie',
+        categoria: 'cultura',
+        icone: 'ic-star',
+        definicao: 'Jogo produzido por estúdios pequenos ou equipes independentes, muitas vezes com orçamento limitado e liberdade criativa. Pode competir em qualidade com grandes lançamentos.',
+        exemplo: 'O indie de fazenda vendeu mais que muitos lançamentos AAA naquele ano.',
+        curiosidade: 'A popularização dos jogos indie veio junto com as lojas digitais e as ferramentas de desenvolvimento acessíveis.'
+      },
+      {
+        id: 'aaa',
+        termo: 'AAA',
+        categoria: 'cultura',
+        icone: 'ic-factory',
+        definicao: 'Classificação informal para jogos de grande orçamento, produzidos por estúdios grandes e com forte marketing. O termo não garante qualidade, apenas escala de produção.',
+        exemplo: 'O AAA tinha gráficos impressionantes, mas a história parecia inacabada.',
+        curiosidade: 'A origem do termo é comparada à nota máxima de agências de crédito, não a uma certificação da indústria.'
+      },
+      {
+        id: 'early-access',
+        termo: 'Early Access',
+        categoria: 'cultura',
+        icone: 'ic-early',
+        definicao: 'Modelo de lançamento em que o jogo é vendido antes de estar completo, para financiar o desenvolvimento e coletar feedback. O jogador precisa aceitar que sistemas e conteúdo ainda podem mudar.',
+        exemplo: 'Comprei o jogo em Early Access e acompanhei as atualizações por dois anos.',
+        curiosidade: 'Alguns jogos ficam anos em Early Access; outros chegam à versão final em poucos meses.'
+      },
+      {
+        id: 'loot-box',
+        termo: 'Loot Box',
+        categoria: 'cultura',
+        icone: 'ic-lootbox',
+        definicao: 'Caixa virtual comprada ou recebida que entrega itens aleatórios, como cosméticos ou personagens. Funciona como uma recompensa surpresa, mas pode virar apostas disfarçadas.',
+        exemplo: 'Abri dez loot boxes e não veio a skin que eu queria.',
+        curiosidade: 'Países como Bélgica e Holanda classificaram algumas loot boxes como forma de jogo de azar.'
+      },
+      {
+        id: 'microtransacao',
+        termo: 'Microtransação',
+        categoria: 'cultura',
+        icone: 'ic-coin',
+        definicao: 'Compra pequena feita dentro de um jogo, geralmente para obter cosméticos, moeda virtual ou vantagens. Pode ser opcional ou parte central do modelo de negócio.',
+        exemplo: 'Comprei uma microtransação de 5 reais só para trocar a cor da armadura.',
+        curiosidade: 'Microtransações cosméticas sustentam muitos jogos gratuitos sem dividir a comunidade entre pagantes e não pagantes.'
+      },
+      {
+        id: 'battle-pass',
+        termo: 'Battle Pass',
+        categoria: 'cultura',
+        icone: 'ic-ticket',
+        definicao: 'Passe sazonal que desbloqueia recompensas conforme o jogador acumula progresso em desafios. Costuma ter uma trilha gratuita e outra paga.',
+        exemplo: 'Completei o battle pass da temporada e ganhei skins, moedas e vários emotes.',
+        curiosidade: 'O modelo foi popularizado por Fortnite e virou padrão em jogos como serviço.'
+      },
+      {
+        id: 'esports',
+        termo: 'eSports',
+        categoria: 'cultura',
+        icone: 'ic-trophy',
+        definicao: 'Competições organizadas de jogos eletrônicos, com equipes, treinos e transmissões. Podem ter ligas próprias, premiações e regras específicas por título.',
+        exemplo: 'Assisti à final de eSports e fiquei impressionado com a coordenação do time.',
+        curiosidade: 'O primeiro torneio de eSports documentado aconteceu em 1972, com o jogo Spacewar.'
+      },
+      {
+        id: 'cosplay',
+        termo: 'Cosplay',
+        categoria: 'cultura',
+        icone: 'ic-mask',
+        definicao: 'Prática de se fantasiar como personagens de jogos, filmes ou quadrinhos, muitas vezes com réplicas de armaduras e acessórios. Pode ser hobby, performance ou competição.',
+        exemplo: 'O cosplay da personagem usava uma armadura de EVA que parecia metal.',
+        curiosidade: 'Cosplays competitivos são avaliados por fidelidade, acabamento e apresentação no palco.'
+      },
+      {
+        id: 'remaster',
+        termo: 'Remaster',
+        categoria: 'cultura',
+        icone: 'ic-grinding',
+        definicao: 'Relançamento de um jogo com melhorias de resolução, áudio e desempenho, mas mantendo a estrutura e o design originais. Não deve ser confundido com um remake.',
+        exemplo: 'O remaster rodou em 60 fps e preservou os controles clássicos.',
+        curiosidade: 'Remasters às vezes incluem opções para alternar entre gráficos antigos e novos em tempo real.'
+      },
+      {
+        id: 'remake',
+        termo: 'Remake',
+        categoria: 'cultura',
+        icone: 'ic-grinding',
+        definicao: 'Recriação de um jogo do zero, com novos gráficos, controles e às vezes mudanças na história. Pode modernizar a experiência ou reinterpretar o original.',
+        exemplo: 'O remake mudou a câmera e os controles, mas manteve os chefes icônicos.',
+        curiosidade: 'Um remake pode ser tão diferente do original que se torna uma nova experiência.'
+      },
+      {
+        id: 'abandonware',
+        termo: 'Abandonware',
+        categoria: 'cultura',
+        icone: 'ic-archive',
+        definicao: 'Software antigo que não é mais vendido ou suportado oficialmente, mas ainda tem valor histórico ou afetivo. Baixar e preservar esses jogos envolve questões legais e éticas.',
+        exemplo: 'Encontrei o abandonware em um arquivo da comunidade e consegui rodar no emulador.',
+        curiosidade: 'Abandonware não é um status jurídico: os direitos autorais continuam valendo mesmo sem suporte.'
+      },
+      {
+        id: 'preservacao',
+        termo: 'Preservação',
+        categoria: 'cultura',
+        icone: 'ic-archive',
+        definicao: 'Conjunto de esforços para manter jogos, consoles e documentos acessíveis no futuro, incluindo backups, emulação e conservação física. Sem isso, títulos e versões podem desaparecer.',
+        exemplo: 'O projeto de preservação digitalizou manuais e revistas da década de 1990.',
+        curiosidade: 'Museus e bibliotecas já tratam videogames como patrimônio cultural e material de pesquisa.'
+      },
+      {
+        id: 'crunch',
+        termo: 'Crunch',
+        categoria: 'cultura',
+        icone: 'ic-flame',
+        definicao: 'Período de trabalho excessivo e prolongado para cumprir prazos de desenvolvimento. Costuma afetar a saúde das equipes e a qualidade final do jogo.',
+        exemplo: 'A desenvolvedora admitiu crunch de três meses antes do lançamento.',
+        curiosidade: 'Relatos de crunch se tornaram pauta sindical na indústria de jogos.'
+      },
+      {
+        id: 'retrogaming',
+        termo: 'Retrogaming',
+        categoria: 'cultura',
+        icone: 'ic-crt',
+        definicao: 'Prática de jogar, colecionar e estudar jogos de gerações passadas, muitas vezes em hardware original ou por emulação. Inclui restauração, modding e preservação.',
+        exemplo: 'Meu retrogaming começou com um Mega Drive comprado em um bazar.',
+        curiosidade: 'A cena retrogamer mantém vivas feiras de cartuchos, campeonatos e reparos de consoles.'
+      },
+      {
+        id: 'console-war',
+        termo: 'Console War',
+        categoria: 'cultura',
+        icone: 'ic-versus',
+        definicao: 'Rivalidade entre fãs de consoles diferentes, marcada por comparações de hardware, catálogo e vendas. Pode ser brincadeira, mas também gera discussões tóxicas.',
+        exemplo: 'A console war na escola dividia quem defendia o Mega Drive e quem defendia o SNES.',
+        curiosidade: 'Campanhas publicitárias dos anos 1990 alimentavam a rivalidade entre Sega e Nintendo.'
+      }
+    ];
+
+    /* Cada verbete recebe um número fixo de ficha, como em um catálogo */
+    TERMOS.forEach((t, i) => { t.numero = String(i + 1).padStart(2, '0'); });
+
+    const CHAVE_FAVORITOS = 'gg-favoritos-v1';
+
+    /* =========================================================
+       ESTADO E REFERÊNCIAS DO DOM
+       ========================================================= */
+    const estado = {
+      busca: '',
+      categoria: 'todos',
+      favoritos: false,
+      ordem: 'padrao'
+    };
+
+    let favoritos = new Set();
+    let primeiroRender = true;
+    let termoAtual = null;          // verbete aberto no modal
+    let ultimoFoco = null;          // elemento que abriu o modal
+    let temporizadorToast = null;
+
+    const el = {
+      grid: document.getElementById('grid'),
+      vazio: document.getElementById('vazio'),
+      vazioTitulo: document.getElementById('vazio-titulo'),
+      vazioTexto: document.getElementById('vazio-texto'),
+      limpar: document.getElementById('limpar'),
+      contador: document.getElementById('contador'),
+      filtros: document.getElementById('filtros'),
+      busca: document.getElementById('busca'),
+      aleatorio: document.getElementById('aleatorio'),
+      modal: document.getElementById('modal'),
+      toast: document.getElementById('toast')
+    };
+
+    /* =========================================================
+       UTILITÁRIOS · texto, acentos e destaque da busca
+       ========================================================= */
+    function normalizar(texto) {
+      return texto
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+    }
+
+    function escaparHtml(texto) {
+      return String(texto).replace(/[&<>"']/g, (c) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+
+    function escaparRegex(texto) {
+      return texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    /* Mapeia letras para aceitar consulta com ou sem acento */
+    const ACENTOS = {
+      a: 'aàáâãäå', c: 'cç', e: 'eèéêë', i: 'iìíîï',
+      n: 'nñ', o: 'oòóôõö', u: 'uùúûü', y: 'yÿ'
+    };
+
+    function criarRegexBusca(consulta) {
+      const tokens = consulta.trim().split(/\s+/).filter(Boolean);
+      if (!tokens.length) return null;
+
+      const partes = tokens
+        .slice()
+        .sort((a, b) => b.length - a.length)
+        .map((token) => Array.from(token).map((caractere) => {
+          const base = normalizar(caractere);
+          const grupo = ACENTOS[base];
+          if (grupo) {
+            return '[' + grupo + grupo.toUpperCase() + ']';
+          }
+          return escaparRegex(caractere);
+        }).join(''));
+
+      return new RegExp(partes.join('|'), 'gi');
+    }
+
+    /* Destaca os trechos encontrados sem quebrar o HTML do texto */
+    function realcar(texto, regex) {
+      if (!regex) return escaparHtml(texto);
+
+      let resultado = '';
+      let ultimoIndice = 0;
+      let encontrado;
+      regex.lastIndex = 0;
+
+      while ((encontrado = regex.exec(texto)) !== null) {
+        if (encontrado[0].length === 0) {
+          regex.lastIndex += 1;
+          continue;
+        }
+        resultado += escaparHtml(texto.slice(ultimoIndice, encontrado.index));
+        resultado += '<mark>' + escaparHtml(encontrado[0]) + '</mark>';
+        ultimoIndice = encontrado.index + encontrado[0].length;
+      }
+
+      resultado += escaparHtml(texto.slice(ultimoIndice));
+      return resultado;
+    }
+
+    /* =========================================================
+       FAVORITOS · persistência tolerante a falhas
+       ========================================================= */
+    function carregarFavoritos() {
+      try {
+        const bruto = localStorage.getItem(CHAVE_FAVORITOS);
+        if (!bruto) return;
+        const lista = JSON.parse(bruto);
+        if (!Array.isArray(lista)) return;
+        favoritos = new Set(lista.filter((id) => TERMOS.some((t) => t.id === id)));
+      } catch (erro) {
+        favoritos = new Set();
+      }
+    }
+
+    function salvarFavoritos() {
+      try {
+        localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify([...favoritos]));
+      } catch (erro) {
+        /* Sem localStorage, os favoritos continuam válidos nesta sessão */
+      }
+    }
+
+    function atualizarBotoesFavorito(id) {
+      const ativo = favoritos.has(id);
+      const termo = TERMOS.find((t) => t.id === id);
+      document.querySelectorAll('[data-fav-id="' + id + '"]').forEach((botao) => {
+        botao.classList.toggle('is-fav', ativo);
+        botao.setAttribute('aria-pressed', String(ativo));
+        if (termo) {
+          botao.setAttribute(
+            'aria-label',
+            (ativo ? 'Remover ' : 'Favoritar ') + termo.termo +
+            (ativo ? ' dos favoritos' : '')
+          );
+        }
+      });
+    }
+
+    function alternarFavorito(id, origem) {
+      if (!TERMOS.some((t) => t.id === id)) return;
+
+      if (favoritos.has(id)) favoritos.delete(id);
+      else favoritos.add(id);
+      salvarFavoritos();
+      atualizarBotoesFavorito(id);
+
+      /* Na visão de favoritos, o card precisa entrar ou sair da lista */
+      if (estado.favoritos) {
+        renderizar();
+        if (origem === 'card') {
+          const novoBotao = el.grid.querySelector('[data-fav-id="' + id + '"]');
+          if (novoBotao) novoBotao.focus();
+          else document.querySelector('[data-filter="favoritos"]').focus();
+        }
+      } else {
+        atualizarChips();
+      }
+
+      if (termoAtual && termoAtual.id === id) {
+        const botaoModal = el.modal.querySelector('[data-fav-modal]');
+        if (botaoModal) {
+          const rotulo = botaoModal.querySelector('[data-fav-rotulo]');
+          const ativo = favoritos.has(id);
+          botaoModal.classList.toggle('is-fav', ativo);
+          botaoModal.setAttribute('aria-pressed', String(ativo));
+          if (rotulo) rotulo.textContent = ativo ? 'Favoritado' : 'Favoritar';
+        }
+      }
+    }
+
+    /* =========================================================
+       FILTRAGEM, ORDENAÇÃO E CONTADORES
+       ========================================================= */
+    function termosVisiveis() {
+      const tokens = normalizar(estado.busca).trim().split(/\s+/).filter(Boolean);
+
+      const lista = TERMOS.filter((termo) => {
+        if (estado.categoria !== 'todos' && termo.categoria !== estado.categoria) return false;
+        if (estado.favoritos && !favoritos.has(termo.id)) return false;
+        if (!tokens.length) return true;
+
+        const texto = normalizar([
+          termo.termo,
+          termo.expansao || '',
+          termo.definicao,
+          termo.exemplo,
+          CATEGORIAS[termo.categoria].nome
+        ].join(' '));
+
+        return tokens.every((token) => texto.includes(token));
+      });
+
+      if (estado.ordem === 'az') {
+        lista.sort((a, b) => a.termo.localeCompare(b.termo, 'pt-BR', { sensitivity: 'base' }));
+      }
+
+      return lista;
+    }
+
+    function atualizarContador(total) {
+      const rotulo = total === 1 ? 'termo' : 'termos';
+      el.contador.innerHTML = '<strong' + (total === 0 ? ' class="is-zero"' : '') + '>' +
+        total + '</strong> <span>' + rotulo + '</span>';
+      el.contador.setAttribute('aria-label', total + ' ' + rotulo + ' visíveis de ' + TERMOS.length);
+    }
+
+    function montarChips() {
+      const categorias = Object.entries(CATEGORIAS).map(([chave, cat]) => {
+        const total = TERMOS.filter((t) => t.categoria === chave).length;
+        return '<button class="chip" type="button" data-filter="' + chave + '" aria-pressed="false">' +
+          cat.nome + ' <span class="chip__count">' + total + '</span></button>';
+      }).join('');
+
+      el.filtros.innerHTML =
+        '<button class="chip is-active" type="button" data-filter="todos" aria-pressed="true">' +
+          'Todos <span class="chip__count">' + TERMOS.length + '</span></button>' +
+        categorias +
+        '<span class="filters__sep" aria-hidden="true"></span>' +
+        '<button class="chip chip--fav" type="button" data-filter="favoritos" aria-pressed="false">' +
+          '<svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#ic-heart"></use></svg>' +
+          'Favoritos <span class="chip__count" id="contador-favoritos">' + favoritos.size + '</span></button>';
+    }
+
+    function atualizarChips() {
+      el.filtros.querySelectorAll('[data-filter]').forEach((botao) => {
+        const filtro = botao.dataset.filter;
+        const ativo = filtro === 'favoritos'
+          ? estado.favoritos
+          : filtro === 'todos'
+            ? estado.categoria === 'todos'
+            : estado.categoria === filtro;
+
+        botao.classList.toggle('is-active', ativo);
+        botao.setAttribute('aria-pressed', String(ativo));
+      });
+
+      const contadorFav = document.getElementById('contador-favoritos');
+      if (contadorFav) contadorFav.textContent = favoritos.size;
+    }
+
+    /* =========================================================
+       RENDERIZAÇÃO DOS CARDS
+       ========================================================= */
+    function cardHtml(termo, indice, regex) {
+      const cat = CATEGORIAS[termo.categoria];
+      const ativo = favoritos.has(termo.id);
+      const atraso = primeiroRender
+        ? Math.min(indice * 45, 450)
+        : Math.min(indice * 16, 130);
+
+      const rotuloFav = (ativo ? 'Remover ' : 'Favoritar ') + termo.termo +
+        (ativo ? ' dos favoritos' : '');
+
+      return (
+        '<article class="card" style="--cat: ' + cat.cor + '; --cat-vivid: ' + cat.viva + '; --delay: ' + atraso + 'ms">' +
+          '<div class="card__top">' +
+            '<span class="card__icon" aria-hidden="true"><svg><use href="#' + termo.icone + '"></use></svg></span>' +
+            '<div class="card__tools">' +
+              '<span class="card__no" aria-hidden="true">Nº ' + termo.numero + '</span>' +
+              '<button class="fav' + (ativo ? ' is-fav' : '') + '" type="button" data-fav-id="' + termo.id + '"' +
+                ' aria-pressed="' + ativo + '" aria-label="' + escaparHtml(rotuloFav) + '">' +
+                '<svg aria-hidden="true" focusable="false"><use href="#ic-heart"></use></svg>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card__cat">' +
+            '<span class="card__cat-code">' + cat.codigo + '</span>' +
+            '<span>' + realcar(cat.nome, regex) + '</span>' +
+          '</div>' +
+          '<h2 class="card__title">' +
+            '<a class="card__link" href="#' + termo.id + '" data-abrir="' + termo.id + '">' +
+              realcar(termo.termo, regex) +
+            '</a>' +
+          '</h2>' +
+          (termo.expansao ? '<p class="card__expand">' + escaparHtml(termo.expansao) + '</p>' : '') +
+          '<p class="card__def">' + realcar(termo.definicao, regex) + '</p>' +
+          '<blockquote class="card__example">' +
+            '<span class="card__prompt" aria-hidden="true">&gt;</span>' +
+            realcar(termo.exemplo, regex) +
+          '</blockquote>' +
+          '<div class="card__foot">' +
+            '<span>Ler ficha</span>' +
+            '<svg class="card__foot-icon" aria-hidden="true" focusable="false"><use href="#ic-arrow"></use></svg>' +
+          '</div>' +
+        '</article>'
+      );
+    }
+
+    function atualizarVazio() {
+      const semFavoritos = estado.favoritos && favoritos.size === 0 &&
+        !estado.busca && estado.categoria === 'todos';
+
+      if (semFavoritos) {
+        el.vazioTitulo.textContent = 'Nenhum favorito ainda';
+        el.vazioTexto.textContent = 'Toque no coração de um termo para guardá-lo aqui e encontrá-lo depois.';
+        el.limpar.textContent = 'Ver todos os termos';
+      } else if (estado.busca.trim()) {
+        el.vazioTitulo.textContent = 'Nenhum termo encontrado';
+        el.vazioTexto.textContent = 'Nada no arquivo corresponde a “' + estado.busca.trim() +
+          '”. Tente outro termo ou limpe os filtros.';
+        el.limpar.textContent = 'Limpar busca e filtros';
+      } else {
+        el.vazioTitulo.textContent = 'Nenhum termo encontrado';
+        el.vazioTexto.textContent = 'Essa combinação de filtros não deixou nenhum verbete visível. Limpe os filtros para voltar ao arquivo completo.';
+        el.limpar.textContent = 'Limpar filtros';
+      }
+    }
+
+    function renderizar() {
+      const lista = termosVisiveis();
+      const regex = criarRegexBusca(estado.busca);
+
+      el.grid.classList.toggle('is-filtrado', !primeiroRender);
+      el.grid.innerHTML = lista.map((termo, indice) => cardHtml(termo, indice, regex)).join('');
+      el.grid.hidden = lista.length === 0;
+      el.vazio.hidden = lista.length > 0;
+
+      if (!lista.length) atualizarVazio();
+      atualizarContador(lista.length);
+      atualizarChips();
+      primeiroRender = false;
+    }
+
+    /* =========================================================
+       MODAL · ficha completa, cópia e favorito
+       ========================================================= */
+    function modalHtml(termo, regex) {
+      const cat = CATEGORIAS[termo.categoria];
+      const ativo = favoritos.has(termo.id);
+      const rotuloFav = (ativo ? 'Remover ' : 'Favoritar ') + termo.termo +
+        (ativo ? ' dos favoritos' : '');
+
+      return (
+        '<div class="modal__bar">' +
+          '<span class="modal__file">Ficha ' + termo.numero + ' / ' + TERMOS.length + ' · ' + cat.codigo + '</span>' +
+          '<button class="icon-btn" type="button" data-close aria-label="Fechar ficha">' +
+            '<svg aria-hidden="true" focusable="false"><use href="#ic-close"></use></svg>' +
+          '</button>' +
+        '</div>' +
+        '<div class="modal__body">' +
+          '<div class="modal__head">' +
+            '<span class="modal__icon" aria-hidden="true"><svg><use href="#' + termo.icone + '"></use></svg></span>' +
+            '<div class="modal__heading">' +
+              '<div class="modal__cat">' +
+                '<span class="card__cat-code">' + cat.codigo + '</span>' +
+                '<span>' + realcar(cat.nome, regex) + '</span>' +
+              '</div>' +
+              '<h2 class="modal__title" id="modal-titulo">' + escaparHtml(termo.termo) + '</h2>' +
+              (termo.expansao ? '<p class="modal__expand">' + escaparHtml(termo.expansao) + '</p>' : '') +
+            '</div>' +
+          '</div>' +
+          '<p class="modal__def" id="modal-def">' + realcar(termo.definicao, regex) + '</p>' +
+          '<blockquote class="modal__example">' +
+            '<span class="card__prompt" aria-hidden="true">&gt;</span>' +
+            realcar(termo.exemplo, regex) +
+          '</blockquote>' +
+          '<div class="modal__curio">' +
+            '<span class="modal__curio-label">' +
+              '<svg aria-hidden="true" focusable="false"><use href="#ic-sparkle"></use></svg>' +
+              'Curiosidade' +
+            '</span>' +
+            '<p>' + escaparHtml(termo.curiosidade) + '</p>' +
+          '</div>' +
+          '<div class="modal__actions">' +
+            '<button class="btn btn--primary" type="button" data-copiar>' +
+              '<svg aria-hidden="true" focusable="false"><use href="#ic-copy"></use></svg>' +
+              '<span data-copiar-rotulo aria-live="polite">Copiar definição</span>' +
+            '</button>' +
+            '<button class="btn btn--ghost btn--fav' + (ativo ? ' is-fav' : '') + '" type="button"' +
+              ' data-fav-modal data-fav-id="' + termo.id + '" aria-pressed="' + ativo + '"' +
+              ' aria-label="' + escaparHtml(rotuloFav) + '">' +
+              '<svg aria-hidden="true" focusable="false"><use href="#ic-heart"></use></svg>' +
+              '<span data-fav-rotulo>' + (ativo ? 'Favoritado' : 'Favoritar') + '</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function abrirModal(termo, opcoes) {
+      if (!termo) return;
+      const config = opcoes || {};
+      const atualizarHash = config.atualizarHash !== false;
+
+      if (!el.modal.open) {
+        ultimoFoco = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      }
+
+      termoAtual = termo;
+      el.modal.style.setProperty('--cat', CATEGORIAS[termo.categoria].cor);
+      el.modal.style.setProperty('--cat-vivid', CATEGORIAS[termo.categoria].viva);
+      el.modal.innerHTML = modalHtml(termo, criarRegexBusca(estado.busca));
+
+      if (!el.modal.open) el.modal.showModal();
+      document.documentElement.classList.add('modal-aberto');
+
+      if (atualizarHash && location.hash !== '#' + termo.id) {
+        if (el.modal.open) history.replaceState(null, '', '#' + termo.id);
+        else history.pushState(null, '', '#' + termo.id);
+      }
+
+      requestAnimationFrame(() => {
+        const fechar = el.modal.querySelector('[data-close]');
+        if (fechar) fechar.focus();
+      });
+    }
+
+    function fecharModal(opcoes) {
+      if (!el.modal.open || el.modal.classList.contains('is-closing')) return;
+      const config = opcoes || {};
+      const limparHash = config.limparHash !== false;
+      const reduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      el.modal.classList.add('is-closing');
+
+      window.setTimeout(() => {
+        el.modal.classList.remove('is-closing');
+        el.modal.close();
+
+        if (limparHash && location.hash) {
+          history.replaceState(null, '', location.pathname + location.search);
+        }
+      }, reduzido ? 0 : 150);
+    }
+
+    function termoDoHash() {
+      let id = location.hash.replace(/^#/, '');
+      try { id = decodeURIComponent(id); } catch (erro) { /* hash inválido é ignorado */ }
+      id = id.trim().toLowerCase();
+      return TERMOS.find((termo) => termo.id === id) || null;
+    }
+
+    function sincronizarComHash() {
+      const termo = termoDoHash();
+
+      if (termo) {
+        if (!el.modal.open || !termoAtual || termoAtual.id !== termo.id) {
+          abrirModal(termo, { atualizarHash: false });
+        }
+      } else if (el.modal.open) {
+        fecharModal({ limparHash: false });
+      }
+    }
+
+    /* =========================================================
+       CÓPIA PARA A ÁREA DE TRANSFERÊNCIA
+       ========================================================= */
+    async function copiarTexto(texto) {
+      try {
+        await navigator.clipboard.writeText(texto);
+        return true;
+      } catch (erro) {
+        try {
+          const area = document.createElement('textarea');
+          area.value = texto;
+          area.setAttribute('readonly', '');
+          area.style.position = 'fixed';
+          area.style.top = '-1000px';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          const copiado = document.execCommand('copy');
+          area.remove();
+          return copiado;
+        } catch (falha) {
+          return false;
+        }
+      }
+    }
+
+    async function copiarDefinicao(botao) {
+      if (!termoAtual) return;
+
+      const texto = termoAtual.termo +
+        (termoAtual.expansao ? ' (' + termoAtual.expansao + ')' : '') +
+        ': ' + termoAtual.definicao;
+
+      const rotulo = botao.querySelector('[data-copiar-rotulo]');
+      const copiou = await copiarTexto(texto);
+
+      botao.disabled = true;
+      if (rotulo) rotulo.textContent = copiou ? 'Definição copiada' : 'Não foi possível copiar';
+      botao.querySelector('svg use').setAttribute('href', copiou ? '#ic-check' : '#ic-close');
+
+      window.setTimeout(() => {
+        botao.disabled = false;
+        if (rotulo) rotulo.textContent = 'Copiar definição';
+        botao.querySelector('svg use').setAttribute('href', '#ic-copy');
+      }, 2200);
+    }
+
+    /* =========================================================
+       AVISOS
+       ========================================================= */
+    function mostrarToast(mensagem) {
+      el.toast.textContent = mensagem;
+      el.toast.classList.add('is-visible');
+      window.clearTimeout(temporizadorToast);
+      temporizadorToast = window.setTimeout(() => {
+        el.toast.classList.remove('is-visible');
+      }, 2800);
+    }
+
+    /* =========================================================
+       EVENTOS
+       ========================================================= */
+    el.busca.addEventListener('input', () => {
+      estado.busca = el.busca.value;
+      renderizar();
+    });
+
+    el.filtros.addEventListener('click', (evento) => {
+      const botao = evento.target.closest('[data-filter]');
+      if (!botao) return;
+
+      const filtro = botao.dataset.filter;
+      if (filtro === 'favoritos') {
+        estado.favoritos = !estado.favoritos;
+      } else {
+        estado.categoria = filtro;
+      }
+      renderizar();
+    });
+
+    document.querySelectorAll('[data-sort]').forEach((botao) => {
+      botao.addEventListener('click', () => {
+        estado.ordem = botao.dataset.sort;
+        document.querySelectorAll('[data-sort]').forEach((outro) => {
+          const ativo = outro === botao;
+          outro.classList.toggle('is-active', ativo);
+          outro.setAttribute('aria-pressed', String(ativo));
+        });
+        renderizar();
+      });
+    });
+
+    el.grid.addEventListener('click', (evento) => {
+      const favorito = evento.target.closest('[data-fav-id]');
+      if (favorito) {
+        evento.preventDefault();
+        evento.stopPropagation();
+        alternarFavorito(favorito.dataset.favId, 'card');
+        return;
+      }
+
+      const abrir = evento.target.closest('[data-abrir]');
+      if (!abrir) return;
+      evento.preventDefault();
+      const termo = TERMOS.find((item) => item.id === abrir.dataset.abrir);
+      if (termo) abrirModal(termo);
+    });
+
+    el.aleatorio.addEventListener('click', () => {
+      const lista = termosVisiveis();
+      if (!lista.length) {
+        mostrarToast('Nenhum termo visível para sortear. Limpe os filtros.');
+        return;
+      }
+
+      let candidatos = lista;
+      if (termoAtual && lista.length > 1) {
+        candidatos = lista.filter((termo) => termo.id !== termoAtual.id);
+      }
+      const escolhido = candidatos[Math.floor(Math.random() * candidatos.length)];
+
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const dado = el.aleatorio.querySelector('svg');
+        if (dado && dado.animate) {
+          dado.animate(
+            [{ transform: 'rotate(0deg)' }, { transform: 'rotate(180deg)' }],
+            { duration: 340, easing: 'cubic-bezier(.22,1,.36,1)' }
+          );
+        }
+      }
+
+      abrirModal(escolhido);
+    });
+
+    el.limpar.addEventListener('click', () => {
+      estado.busca = '';
+      estado.categoria = 'todos';
+      estado.favoritos = false;
+      el.busca.value = '';
+      renderizar();
+      el.busca.focus();
+    });
+
+    el.modal.addEventListener('click', (evento) => {
+      const fechar = evento.target.closest('[data-close]');
+      if (fechar) {
+        fecharModal();
+        return;
+      }
+
+      const copiar = evento.target.closest('[data-copiar]');
+      if (copiar) {
+        copiarDefinicao(copiar);
+        return;
+      }
+
+      const favorito = evento.target.closest('[data-fav-modal]');
+      if (favorito && termoAtual) {
+        alternarFavorito(termoAtual.id, 'modal');
+        return;
+      }
+
+      /* Clique no backdrop (fora do retângulo do diálogo) fecha */
+      if (evento.target === el.modal) {
+        const area = el.modal.getBoundingClientRect();
+        const fora = evento.clientX < area.left || evento.clientX > area.right ||
+          evento.clientY < area.top || evento.clientY > area.bottom;
+        if (fora) fecharModal();
+      }
+    });
+
+    el.modal.addEventListener('cancel', (evento) => {
+      evento.preventDefault();
+      fecharModal();
+    });
+
+    el.modal.addEventListener('close', () => {
+      termoAtual = null;
+      el.modal.innerHTML = '';
+      document.documentElement.classList.remove('modal-aberto');
+
+      if (ultimoFoco && ultimoFoco.isConnected) {
+        ultimoFoco.focus({ preventScroll: true });
+      } else if (estado.favoritos) {
+        const chipFavoritos = document.querySelector('[data-filter="favoritos"]');
+        if (chipFavoritos) chipFavoritos.focus({ preventScroll: true });
+      }
+      ultimoFoco = null;
+    });
+
+    /* Mantém o Tab dentro do modal enquanto ele estiver aberto */
+    el.modal.addEventListener('keydown', (evento) => {
+      if (evento.key !== 'Tab') return;
+
+      const focaveis = Array.from(el.modal.querySelectorAll(
+        'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )).filter((elemento) =>
+        elemento instanceof HTMLElement &&
+        elemento.tabIndex >= 0 &&
+        elemento.offsetParent !== null
+      );
+
+      if (!focaveis.length) return;
+
+      const primeiro = focaveis[0];
+      const ultimo = focaveis[focaveis.length - 1];
+
+      if (evento.shiftKey && document.activeElement === primeiro) {
+        evento.preventDefault();
+        ultimo.focus();
+      } else if (!evento.shiftKey && document.activeElement === ultimo) {
+        evento.preventDefault();
+        primeiro.focus();
+      }
+    });
+
+    /* Atalho "/" foca a busca; não interfere em campos nem no modal */
+    document.addEventListener('keydown', (evento) => {
+      if (evento.key !== '/' || evento.ctrlKey || evento.metaKey || evento.altKey) return;
+      if (el.modal.open) return;
+
+      const alvo = evento.target;
+      const digitando = alvo && (
+        alvo.tagName === 'INPUT' ||
+        alvo.tagName === 'TEXTAREA' ||
+        alvo.isContentEditable
+      );
+      if (digitando) return;
+
+      evento.preventDefault();
+      el.busca.focus();
+      el.busca.select();
+    });
+
+    window.addEventListener('hashchange', sincronizarComHash);
+    window.addEventListener('popstate', sincronizarComHash);
+
+    /* =========================================================
+       INICIALIZAÇÃO
+       ========================================================= */
+    carregarFavoritos();
+    montarChips();
+    renderizar();
+    sincronizarComHash();
+
+
+
+  </script>
+</body>
+</html>
